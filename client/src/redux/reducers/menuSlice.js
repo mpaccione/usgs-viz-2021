@@ -4,8 +4,8 @@ const initialState = {
   vizLoad: false,
   vizInit: false,
   preloaderText: "",
-  responseComplete: "",
-  progressComplete: ""
+  responseComplete: 0,
+  progressComplete: 0
 };
 
 const menuSlice = createSlice({
@@ -18,6 +18,10 @@ const menuSlice = createSlice({
     },
     setVizInit: (state, action) => {
       state.vizInit = action.payload;
+      return state;
+    },
+    setPreloaderText: (state, action) => {
+      state.preloaderText = action.payload
       return state;
     },
     setResponseComplete: (state, action) => {
@@ -34,6 +38,7 @@ const menuSlice = createSlice({
 export const {
     setVizLoad,
     setVizInit,
+    setPreloaderText,
     setResponseComplete,
     setProgressComplete,
 } = menuSlice.actions;

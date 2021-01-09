@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { menuAnimation } from "@/utils/menu";
+import { menuAnimation } from "@/utils/menuAnimation";
 
 let vizLoadPrev = false;
 // SCENE
 const { innerWidth, innerHeight } = window;
 const animationBg = menuAnimation(innerWidth, innerHeight);
 
+// TODO: Debug Missing Spheres
+window.animationBg = animationBg;
 console.log({ animationBg });
 
 const Animation = () => {

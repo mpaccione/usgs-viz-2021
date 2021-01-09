@@ -1,103 +1,123 @@
-import * as THREE from "three";
-import * as TWEEN from "@tweenjs/tween.js";
+import { batch } from "react-redux";
+import { dispatchError } from "@/api/index.js";
 import {
-  EffectComposer,
-  EffectPass,
-  RenderPass,
-  VignetteEffect,
-  BloomEffect,
-  BlendFunction,
-} from "postprocessing";
+  setPreloaderText,
+  setProgressComplete,
+} from "@/redux/reducers/menuSlice.js";
+import { setThreeData, setQuakes } from "@/redux/reducers/vizSlice.js";
+import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
 
-export const menuAnimation = (width, height) => {
-    // SCENE
-    const Scene = new THREE.Scene();
-    // CAMERA
-    Scene.camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
-    Scene.camera.position.z = 4;
-    // RENDERER
-    Scene.renderer = new THREE.WebGLRenderer({antialias: true})
-    Scene.renderer.setClearColor("#544435");
-    Scene.renderer.setSize(width, height);
-    // Scene.mount.appendChild(Scene.renderer.domElement); // Later after DOM is rendered
-    // ADD SPHERES
-    const geometry = new THREE.SphereGeometry(0.4, 10, 10);
-    const material = new THREE.MeshBasicMaterial({ color: '#25963e', wireframe: true, transparent: true });
-    Scene.sphereGroup = new THREE.Group();
-    Scene.sphereOne = new THREE.Mesh(geometry, material);
-    Scene.sphereTwo = new THREE.Mesh(geometry, material);
-    Scene.sphereOne.name = "sphereOne";
-    Scene.sphereTwo.name = "sphereTwo";
-    Scene.sphereOne.position.setX(-2);
-    Scene.sphereOne.position.setY(1);
-    Scene.sphereTwo.position.setX(2);
-    Scene.sphereTwo.position.setY(-1);
-    Scene.sphereGroup.add(Scene.sphereOne);
-    Scene.sphereGroup.add(Scene.sphereTwo);
-    Scene.add(Scene.sphereGroup);
-    // EFFECTS
-    const vignette = new VignetteEffect({
-        eskil: false,
-        offset: 0.35,
-        darkness: 0.5
+export const calcDownloadTimes = (bLen) => {
+  // 2G - 0.1MB/S, 3G - 3MB/S, 4G - 20MB/S, 5G - 100MB/S
+  return {
+    "2G": bLen / 100000,
+    "3G": bLen / 3000000,
+    "4G": bLen / 20000000,
+    "5G": bLen / 100000000,
+  };
+};
+
+export const createIndexedDB = (indexedDB) => {
+  const dbReq = indexedDB.open("JSON", 1);
+
+  dbReq.onerror = (e) => dispatchError(e);
+
+  dbReq.onupgradeneeded = (e) => {
+    const db = e.target.result;
+    db.createObjectStore("geo", {
+      autoIncrement: true,
     });
-    const bloom = new BloomEffect({
-        blendFunction: BlendFunction.SCREEN,
-        resolutionScale: 1.0,
-        distinction: 1.0,
-        opacity: 4.0
+    db.createObjectStore("three", {
+      autoIncrement: true,
     });
-    const effectsPass = new EffectPass( Scene.camera, bloom, vignette );
-    effectsPass.renderToScreen = true;
+  };
+};
 
-    Scene.composer = new EffectComposer( Scene.renderer );
-    Scene.composer.setSize( width, height );
-    Scene.composer.addPass( new RenderPass(Scene.scene, Scene.camera) );
-    Scene.composer.addPass( effectsPass );
+export const getCacheData = (indexedDB, dispatch) => {
+  const dbReq = indexedDB.open("JSON", 2);
 
-    Scene.clock = new THREE.Clock();
+  dbReq.onsuccess = (e) => {
+    const db = e.target.result;
+    // GEO
+    const transaction1 = db.transaction("geo", "readonly");
+    const store1 = transaction1.objectStore("geo");
+    const storeReq1 = store1.getAll();
+    // THREE
+    const transaction2 = db.transaction("three", "readonly");
+    const store2 = transaction2.objectStore("three");
+    const storeReq2 = store2.getAll();
 
-    Scene.animate = () => {
-        Scene.sphereOne.rotation.x += 0.01;
-        Scene.sphereOne.rotation.y += 0.01;
-        Scene.sphereTwo.rotation.x += 0.01;
-        Scene.sphereTwo.rotation.y += 0.01;
-        Scene.sphereGroup.rotation.y += 0.01;
-        TWEEN.update();
-        Scene.renderScene();
-        Scene.frameId = window.requestAnimationFrame(Scene.animate);
-    }
+    storeReq1.onsuccess = (data) => {
+      const { result } = data.target;
+      // console.log("req1sucess");
+      // console.log(result);
 
-    Scene.renderScene = () => {
-        Scene.composer.render(Scene.clock.getDelta())
-    }
+      result.length === 0
+        ? dispatch(
+            setPreloaderText("Cache Data Empty, Try Again with Internet")
+          )
+        : dispatch(setQuakes(result[0]));
+    };
 
-    // Call in useEffect Hook after DOM loaded
-    Scene.start = () => {
-        if (!Scene.frameId){
-            Scene.mount.appendChild(Scene.renderer.domElement);
-            Scene.frameId = requestAnimationFrame(Scene.animate)
-        }
-    }
+    storeReq2.onsuccess = (data) => {
+      const { result } = data.target;
+      // console.log("req2sucess");
+      // console.log(result);
 
-    Scene.stop = () => {
-        cancelAnimationFrame(Scene.frameId)
-    }
+      if (result.length === 0) {
+        dispatch(setPreloaderText("Cache Data Empty, Try Again with Internet"));
+      } else {
+        batch(() => {
+          dispatch(setProgressComplete(100));
+          dispatch(setThreeData(result[0]));
+          dispatch(setFeedIndex(result[0]));
+          //dispatch(setVizInitSuccess(true));
+        });
+      }
+    };
+  };
+};
 
-    Scene.outro = () => {
-        const sphereArr = [Scene.sphereOne, Scene.sphereTwo];
+export const putCacheData = (res, indexedDB, dispatch) => {
+  const dbReq = indexedDB.open("JSON");
 
-        for (const sphere of sphereArr){
-            const scaleObj = { x: 1, y: 1, z: 1 };
-            const scaleTarget = { x: 3, y: 3, z: 3 };
-            const scaleTween  = new TWEEN.Tween(scaleObj).to(scaleTarget, 1000).onUpdate(() => { 
-                                    sphere.scale.x = scaleObj.x; 
-                                    sphere.scale.y = scaleObj.y; 
-                                    sphere.scale.z = scaleObj.z; 
-                                }).start();
-            const opacityTween = new TWEEN.Tween(sphere.material).to({ opacity: 0 }, 1000).start();
-        }
-    }
+  dbReq.onsuccess = (e) => {
+    console.log("req.onsuccess");
 
-    return Scene
-}
+    const db = e.target.result;
+    // GEO
+    const transaction1 = db.transaction(["geo"], "readwrite");
+    const store1 = transaction1.objectStore("geo");
+    const storeReq1 = store1.put(res[0], 0);
+
+    storeReq1.onsuccess = function (e) {
+      console.log("storeReq1.onsuccess");
+    };
+
+    storeReq1.onerror = function (e) {
+      console.log("storeReq1.onerror");
+      dispatchError(e);
+    };
+    // THREE
+    const transaction2 = db.transaction(["three"], "readwrite");
+    const store2 = transaction2.objectStore("three");
+    const storeReq2 = store2.put(res[1], 0);
+
+    storeReq2.onsuccess = function (e) {
+      console.log("storeReq2.onsuccess");
+    };
+
+    storeReq2.onerror = function (e) {
+      console.log("storeReq2.onerror");
+      dispatchError(e);
+    };
+    // SET REDUX
+    batch(() => {
+        dispatch(setQuakes(res[0]))
+        dispatch(setThreeData(res[1]))
+        // TODO: Create recursive function to get maximum feedIndex
+        dispatch(setFeedIndex(0)) // TEMP
+        // dispatch(setVizInitSuccess(true))
+    })
+  };
+};
