@@ -1,14 +1,14 @@
 import React from 'react'
 import { Router } from "@reach/router"
-import MenuScreen from "./pages/menuScreen/index.jsx"
-// import DataViz from "./pages/dataViz"
+import Menu from "@/pages/menu/index.jsx"
+import DataViz from "@/pages/dataViz/index.jsx"
 
 
 
 const App = () => (
     <Router>
-        <MenuScreen exact path="/" />
-        {/* <DataViz exact path="/viz" /> */}
+        <Menu exact path="/" />
+        <DataViz exact path="/viz" />
     </Router>
 )
 

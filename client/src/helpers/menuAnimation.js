@@ -82,6 +82,7 @@ export const menuAnimation = (width, height) => {
 
     Scene.stop = () => {
         cancelAnimationFrame(Scene.frameId)
+        // Scene.mount.removeChild(Scene.renderer.domElement);
     }
 
     Scene.outro = () => {

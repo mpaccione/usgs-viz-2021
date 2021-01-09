@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   vizLoad: false,
   vizInit: false,
+  vizInitSuccess: false,
   preloaderText: "",
   responseComplete: 0,
   progressComplete: 0
@@ -18,6 +19,10 @@ const menuSlice = createSlice({
     },
     setVizInit: (state, action) => {
       state.vizInit = action.payload;
+      return state;
+    },
+    setVizInitSuccess: (state, action) => {
+      state.vizInitSuccess = action.payload;
       return state;
     },
     setPreloaderText: (state, action) => {
@@ -38,6 +43,7 @@ const menuSlice = createSlice({
 export const {
     setVizLoad,
     setVizInit,
+    setVizInitSuccess,
     setPreloaderText,
     setResponseComplete,
     setProgressComplete,

@@ -1,6 +1,6 @@
 import React from "react"
-import Animation from "@/pages/menuScreen/components/animation.jsx"
-import Menu from "@/pages/menuScreen/components/menu.jsx"
+import Animation from "@/pages/menu/components/animation/index.jsx"
+import Menu from "@/pages/menu/components/menu/index.jsx"
 
 const MenuPage = () => (
     <div id="menuPage">

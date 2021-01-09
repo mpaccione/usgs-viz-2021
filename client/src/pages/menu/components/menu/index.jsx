@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { navigate } from "@reach/router";
 import { Dropdown, Table, Button, Progress } from "semantic-ui-react";
 import { getByteLengths, dropdownOptions, xhrReq } from "@/helpers/menu.js";
-import "./menu.scss";
+import "./index.scss";
 
 const indexedDB =
   window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
 
 const Menu = () => {
   const vizLoad = useSelector((state) => state.menu.vizLoad);
+  const vizInitSuccess = useSelector((state) => state.menu.vizInitSuccess);
   const progressComplete = useSelector((state) => state.menu.progressComplete);
   const preloaderText = useSelector((state) => state.menu.preloaderText);
   const [byteLength, setByteLength] = useState(null);
   const [downloadTimes, setDownloadTimes] = useState(null);
   const [selectValue, setSelectValue] = useState(null);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,6 +23,14 @@ const Menu = () => {
       getByteLengths(setByteLength, setDownloadTimes);
     }
   }, []);
+
+  useEffect(() => {
+    if (vizInitSuccess) {
+      setTimeout(() => {
+        navigate("/viz");
+      }, 1000);
+    }
+  }, [vizInitSuccess]);
 
   return (
     <div id="splashMenu">
@@ -37,7 +46,6 @@ const Menu = () => {
                 console.log(value);
                 setSelectValue(value);
               }}
-              
               value={selectValue}
             />
           </div>
@@ -75,6 +83,7 @@ const Menu = () => {
         </>
       ) : (
         <>
+          {/* TODO: Debug ByteLength MisMatch 3363602 vs 50123595 monthly */}
           <Progress percent={progressComplete} indicating />
           <h3>{preloaderText}</h3>
         </>
@@ -82,7 +91,9 @@ const Menu = () => {
       <h4>
         Data from The United States Geological Service
         <br />
-        <span style={{opacity: 0.4}}>Chrome/Android Browser Required for Textures</span>
+        <span style={{ opacity: 0.4 }}>
+          Chrome/Android Browser Required for Textures
+        </span>
         <br />
         &copy; Michael Paccione
       </h4>

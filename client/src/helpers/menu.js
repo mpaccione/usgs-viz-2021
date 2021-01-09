@@ -4,6 +4,7 @@ import {
   setPreloaderText,
   setProgressComplete,
   setVizLoad,
+  setVizInitSuccess
 } from "@/redux/reducers/menuSlice.js";
 import { setThreeData, setQuakes } from "@/redux/reducers/vizSlice.js";
 import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
@@ -117,7 +118,7 @@ export const getCacheData = (indexedDB, dispatch) => {
           dispatch(setProgressComplete(100));
           dispatch(setThreeData(result[0]));
           dispatch(setFeedIndex(result[0]));
-          //dispatch(setVizInitSuccess(true));
+          dispatch(setVizInitSuccess(true));
         });
       }
     };
@@ -163,7 +164,7 @@ export const putCacheData = (res, indexedDB, dispatch) => {
       dispatch(setThreeData(res[1]));
       // TODO: Create recursive function to get maximum feedIndex
       dispatch(setFeedIndex(0)); // TEMP
-      // dispatch(setVizInitSuccess(true))
+      dispatch(setVizInitSuccess(true))
     });
   };
 };
@@ -179,12 +180,16 @@ export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
   xhrReq.open("GET", `${baseURL}/quakeData/${selectValue}`, true);
 
   xhrReq.onprogress = (e) => {
+    console.log(e.loaded)
+    console.log(byteLength[selectValue])
     dispatch(setProgressComplete((e.loaded / byteLength[selectValue]) * 100));
   };
 
   xhrReq.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       const res = JSON.parse(this.responseText);
+      console.log({res})
+      dispatch(setProgressComplete(100))
       putCacheData(res, indexedDB, dispatch); // Updates Redux after storing to IndexedDB
     }
   };
