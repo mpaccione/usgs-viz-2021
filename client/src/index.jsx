@@ -3,10 +3,10 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import "semantic-ui-css/semantic.min.css";
 
-import "@/styles/Global.scss";
+// import "@/styles/Global.scss";
 
-import App from "./App";
-import store from "./store/Store";
+import App from "@/App";
+import store from "@/redux/store.js";
 
 ReactDOM.render(
     <React.StrictMode>
