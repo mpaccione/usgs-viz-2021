@@ -1,8 +1,9 @@
 import { batch } from "react-redux";
-import { dispatchError, baseURL } from "@/api/index.js";
+import { dispatchError, baseURL, get } from "@/api/index.js";
 import {
   setPreloaderText,
   setProgressComplete,
+  setVizLoad,
 } from "@/redux/reducers/menuSlice.js";
 import { setThreeData, setQuakes } from "@/redux/reducers/vizSlice.js";
 import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
@@ -56,24 +57,26 @@ export const createIndexedDB = (indexedDB) => {
   };
 };
 
-export const getByteLengths = async () => {
-  let byteLengthData;
-  let downloadTimeArr = [];
+export const getByteLengths = async (setByteLength, setDownloadTimes) => {
   try {
     const byteLengthRes = await get("/bufferLength");
+    console.log({byteLengthRes})
     if (byteLengthRes && byteLengthRes.data) {
-      byteLengthData = byteLengthRes.data;
+      let downloadTimeArr = []
       // DOWNLOAD TIMES
-      data.forEach((datum) => {
+      byteLengthRes.data.forEach((datum) => {
         downloadTimeArr.push(calcDownloadTimes(datum));
       });
       // INDEXEDDB FOR CACHE (OFFLINE DATA)
       createIndexedDB(indexedDB);
+      // SET COMPONENT STATE
+      console.log({downloadTimeArr})
+      setByteLength(byteLengthRes.data)
+      setDownloadTimes(downloadTimeArr)
     }
   } catch (err) {
     dispatchError(err);
   }
-  return { byteLengthData, downloadTimeArr };
 };
 
 export const getCacheData = (indexedDB, dispatch) => {

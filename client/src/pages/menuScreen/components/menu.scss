@@ -10,6 +10,32 @@
   padding: 30px;
   text-align: center;
   z-index: 9;
+
+  table,
+  #timeSelect {
+    max-width: 200px;
+    margin: auto;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  #timeSelect {
+    background-color: white;
+    border-radius: 5px;
+
+    .dropdown {
+      height: 22px;
+
+      .menu {
+        left: -61px !important;
+
+        .item {
+          width: 200px;
+          text-align: center;
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 1430px) {

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { menuAnimation } from "@/utils/menuAnimation";
+import { menuAnimation } from "@/helpers/menuAnimation";
 
 let vizLoadPrev = false;
 // SCENE

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Select, Table, Button } from "semantic-ui-react";
-import { getByteLengths, dropdownOptions, xhrReq } from "@/utils/menu.js";
-import "./menu.scss"
+import { useDispatch, useSelector } from "react-redux";
+import { Dropdown, Table, Button, Progress } from "semantic-ui-react";
+import { getByteLengths, dropdownOptions, xhrReq } from "@/helpers/menu.js";
+import "./menu.scss";
 
 const indexedDB =
   window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
@@ -11,15 +11,15 @@ const Menu = () => {
   const vizLoad = useSelector((state) => state.menu.vizLoad);
   const progressComplete = useSelector((state) => state.menu.progressComplete);
   const preloaderText = useSelector((state) => state.menu.preloaderText);
-  const [byteLength, setByteLength] = useState(false);
-  const [downloadTimes, setDownloadTimes] = useState();
-  const [selectValue, setSelectValue] = useState();
+  const [byteLength, setByteLength] = useState(null);
+  const [downloadTimes, setDownloadTimes] = useState(null);
+  const [selectValue, setSelectValue] = useState(null);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!byteLength) {
-      const { byteLengthData, downloadTimeArr } = getByteLengths();
-      setByteLength(byteLengthData);
-      setDownloadTimes(downloadTimeArr);
+    if (byteLength === null) {
+      getByteLengths(setByteLength, setDownloadTimes);
     }
   }, []);
 
@@ -29,30 +29,38 @@ const Menu = () => {
       <br />
       {vizLoad === false ? (
         <>
-          <Select
-            placeholder="Select Time Frame"
-            options={dropdownOptions}
-            onChange={(e) => {
-              setSelectValue(e.target.value);
-            }}
-          />
-          {selectValue !== "null" && (
+          <div id="timeSelect">
+            <Dropdown
+              placeholder="Select Time Frame"
+              options={dropdownOptions}
+              onChange={(e, { value }) => {
+                console.log(value);
+                setSelectValue(value);
+              }}
+              
+              value={selectValue}
+            />
+          </div>
+          {selectValue !== null && (
             <>
               <h3>Estimated Download Time</h3>
               <Table id="speedTable">
                 <Table.Header>
-                  <Table.HeaderCell>Speed</Table.HeaderCell>
-                  <Table.HeaderCell>Time</Table.HeaderCell>
+                  <Table.Row>
+                    <Table.HeaderCell>Speed</Table.HeaderCell>
+                    <Table.HeaderCell>Time</Table.HeaderCell>
+                  </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                  {downloadTimes && downloadTimes.map((time, index) => (
-                    <Table.Row>
-                      <Table.Cell>{index + 2}G</Table.Cell>
-                      <Table.Cell>
-                        {downloadTimes[selectValue][index]}
-                      </Table.Cell>
-                    </Table.Row>
-                  ))}
+                  {downloadTimes &&
+                    downloadTimes.map((time, index) => (
+                      <Table.Row key={index}>
+                        <Table.Cell>{index + 2}G</Table.Cell>
+                        <Table.Cell>
+                          {downloadTimes[selectValue][`${index + 2}G`]}
+                        </Table.Cell>
+                      </Table.Row>
+                    ))}
                 </Table.Body>
               </Table>
               <Button
@@ -74,7 +82,7 @@ const Menu = () => {
       <h4>
         Data from The United States Geological Service
         <br />
-        (Chrome/Android Browser Required for Texture Loading)
+        <span style={{opacity: 0.4}}>Chrome/Android Browser Required for Textures</span>
         <br />
         &copy; Michael Paccione
       </h4>
