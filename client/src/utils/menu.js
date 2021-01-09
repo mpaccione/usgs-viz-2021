@@ -1,5 +1,5 @@
 import { batch } from "react-redux";
-import { dispatchError } from "@/api/index.js";
+import { dispatchError, baseURL } from "@/api/index.js";
 import {
   setPreloaderText,
   setProgressComplete,
@@ -7,13 +7,36 @@ import {
 import { setThreeData, setQuakes } from "@/redux/reducers/vizSlice.js";
 import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
 
+export const dropdownOptions = [
+  {
+    key: 0,
+    value: 0,
+    text: "Past Hour",
+  },
+  {
+    key: 1,
+    value: 1,
+    text: "Past 24 Hour",
+  },
+  {
+    key: 2,
+    value: 2,
+    text: "Past 7 Days",
+  },
+  {
+    key: 3,
+    value: 3,
+    text: "Past 30 Days",
+  },
+];
+
 export const calcDownloadTimes = (bLen) => {
   // 2G - 0.1MB/S, 3G - 3MB/S, 4G - 20MB/S, 5G - 100MB/S
   return {
-    "2G": bLen / 100000,
-    "3G": bLen / 3000000,
-    "4G": bLen / 20000000,
-    "5G": bLen / 100000000,
+    "2G": Math.round((bLen / 100000) * 10000) / 10000 + "s",
+    "3G": Math.round((bLen / 3000000) * 10000) / 10000 + "s",
+    "4G": Math.round((bLen / 20000000) * 10000) / 10000 + "s",
+    "5G": Math.round((bLen / 100000000) * 10000) / 10000 + "s",
   };
 };
 
@@ -31,6 +54,26 @@ export const createIndexedDB = (indexedDB) => {
       autoIncrement: true,
     });
   };
+};
+
+export const getByteLengths = async () => {
+  let byteLengthData;
+  let downloadTimeArr = [];
+  try {
+    const byteLengthRes = await get("/bufferLength");
+    if (byteLengthRes && byteLengthRes.data) {
+      byteLengthData = byteLengthRes.data;
+      // DOWNLOAD TIMES
+      data.forEach((datum) => {
+        downloadTimeArr.push(calcDownloadTimes(datum));
+      });
+      // INDEXEDDB FOR CACHE (OFFLINE DATA)
+      createIndexedDB(indexedDB);
+    }
+  } catch (err) {
+    dispatchError(err);
+  }
+  return { byteLengthData, downloadTimeArr };
 };
 
 export const getCacheData = (indexedDB, dispatch) => {
@@ -113,11 +156,40 @@ export const putCacheData = (res, indexedDB, dispatch) => {
     };
     // SET REDUX
     batch(() => {
-        dispatch(setQuakes(res[0]))
-        dispatch(setThreeData(res[1]))
-        // TODO: Create recursive function to get maximum feedIndex
-        dispatch(setFeedIndex(0)) // TEMP
-        // dispatch(setVizInitSuccess(true))
-    })
+      dispatch(setQuakes(res[0]));
+      dispatch(setThreeData(res[1]));
+      // TODO: Create recursive function to get maximum feedIndex
+      dispatch(setFeedIndex(0)); // TEMP
+      // dispatch(setVizInitSuccess(true))
+    });
   };
+};
+
+export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
+  // XHR REQ (needed for progress api - displaying download progress)
+  const xhrReq = new XMLHttpRequest();
+  batch(() => {
+    dispatch(setVizLoad(true));
+    dispatch(setPreloaderText("Loading Big Data"));
+  });
+
+  xhrReq.open("GET", `${baseURL}/quakeData/${selectValue}`, true);
+
+  xhrReq.onprogress = (e) => {
+    dispatch(setProgressComplete((e.loaded / byteLength[selectValue]) * 100));
+  };
+
+  xhrReq.onreadystatechange = function () {
+    if (this.readyState === 4 && this.status === 200) {
+      const res = JSON.parse(this.responseText);
+      putCacheData(res, indexedDB, dispatch); // Updates Redux after storing to IndexedDB
+    }
+  };
+
+  xhrReq.onerror = (e) => {
+    dispatch(setPreloaderText("Connection Error, Loading Cache Data"));
+    getCacheData();
+  };
+
+  xhrReq.send();
 };

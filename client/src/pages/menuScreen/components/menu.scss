@@ -1,0 +1,21 @@
+#splashMenu {
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 400px;
+  min-width: 300px;
+  position: fixed;
+  background-color: #a7ad9f;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  z-index: 9;
+}
+
+@media (max-width: 1430px) {
+  #splashMenu {
+    width: 100%;
+    padding: 15px;
+    border-radius: 0px;
+  }
+}

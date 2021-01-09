@@ -1,9 +1,9 @@
 import axios from "axios";
-import store from "../store/Store";
+import store from "@/redux/store";
 import {
   setErrorMessage,
   clearErrorMessage,
-} from "../store/reducers/errorSlice";
+} from "@/redux/reducers/errorSlice";
 
 export const baseURL =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
