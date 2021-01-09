@@ -56,7 +56,7 @@ export const menuAnimation = (width, height) => {
 
     Scene.composer = new EffectComposer( Scene.renderer );
     Scene.composer.setSize( width, height );
-    Scene.composer.addPass( new RenderPass(Scene.scene, Scene.camera) );
+    Scene.composer.addPass( new RenderPass(Scene, Scene.camera) );
     Scene.composer.addPass( effectsPass );
 
     Scene.clock = new THREE.Clock();

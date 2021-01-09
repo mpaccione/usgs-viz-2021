@@ -9,10 +9,6 @@ let vizLoadPrev = false;
 const { innerWidth, innerHeight } = window;
 const animationBg = menuAnimation(innerWidth, innerHeight);
 
-// TODO: Debug Missing Spheres
-window.animationBg = animationBg;
-console.log({ animationBg });
-
 const Animation = () => {
   const vizLoad = useSelector((state) => state.menu.vizLoad);
   const dispatch = useDispatch();
