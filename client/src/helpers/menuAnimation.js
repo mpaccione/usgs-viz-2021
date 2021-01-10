@@ -9,18 +9,18 @@ import {
   BlendFunction,
 } from "postprocessing";
 
-export const menuAnimation = (width, height) => {
+export const menuAnimation = (WIDTH, HEIGHT) => {
     // SCENE
     const Scene = new THREE.Scene();
 
     // CAMERA
-    Scene.camera = new THREE.PerspectiveCamera(75, width/height, 0.1, 1000);
+    Scene.camera = new THREE.PerspectiveCamera(75, WIDTH/HEIGHT, 0.1, 1000);
     Scene.camera.position.z = 4;
 
     // RENDERER
     Scene.renderer = new THREE.WebGLRenderer({antialias: true})
     Scene.renderer.setClearColor("#544435");
-    Scene.renderer.setSize(width, height);
+    Scene.renderer.setSize(WIDTH, HEIGHT);
     // Scene.mount.appendChild(Scene.renderer.domElement); // Later after DOM is rendered
 
     // ADD SPHERES
@@ -55,7 +55,7 @@ export const menuAnimation = (width, height) => {
     effectsPass.renderToScreen = true;
 
     Scene.composer = new EffectComposer( Scene.renderer );
-    Scene.composer.setSize( width, height );
+    Scene.composer.setSize( WIDTH, HEIGHT );
     Scene.composer.addPass( new RenderPass(Scene, Scene.camera) );
     Scene.composer.addPass( effectsPass );
 

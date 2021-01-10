@@ -46,6 +46,10 @@ const vizSlice = createSlice({
       state.vizTextureRendered = action.payload;
       return state;
     },
+    setSearchWord: (state, action) => {
+      state.searchWord = action.payload;
+      return state;
+    }
   },
 });
 
@@ -54,6 +58,7 @@ export const {
   setQuakesByIndex,
   setSelectedQuake,
   setThreeData,
-  setVizTextureRendered
+  setVizTextureRendered,
+  setSearchWord
 } = vizSlice.actions;
 export default vizSlice.reducer;

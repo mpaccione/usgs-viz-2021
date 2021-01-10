@@ -1,27 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { isDataAvailable } from "@/helpers/options.jsx";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { isDataAvailable } from "@/helpers/dataVizOptions.js";
 import RotationOption from "./rotationOption";
 import TextureOption from "./textureOption";
 import TimeOption from "./timeOption";
 
-const Options = () => {
-  const options = useSelector((state) => state.options);
-  const vizThreeData = useSelector((state) => state.viz.threeData);
-  const vizTextureRendered = useSelector(
-    (state) => state.viz.vizTextureRendered
-  );
-  const [mobile, setMobile] = useState(window.innerWidth < 1440 ? true : false);
+const Options = ({mobile, options, threeData, vizTextureRendered}) => {
   const dispatch = useDispatch();
-
-  const resizeHandler = () => {
-    window.innerWidth < 1440 ? setMobile(true) : setMobile(false); // TODO: Throttle
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", resizeHandler);
-    return () => window.removeEventListener("resize", resizeHandler);
-  }, []);
 
   return (
     <div id="rightMenu">
@@ -31,10 +16,10 @@ const Options = () => {
           name={"Past Hour"}
           mobileName={"1H"}
           opacity={isDataAvailable[0]}
-          disabled={vizThreeData[0] === null ? true : false}
+          disabled={threeData[0] === null ? true : false}
           checked={options.feedIndex === 0 ? true : false}
           onClick={() => {
-            if (vizThreeData[0] !== null) {
+            if (threeData[0] !== null) {
               dispatch(setFeedIndex(0));
             }
           }}
@@ -44,10 +29,10 @@ const Options = () => {
           name={"Past 24 Hours"}
           mobileName={"24H"}
           opacity={isDataAvailable[1]}
-          disabled={vizThreeData[1] === null ? true : false}
+          disabled={threeData[1] === null ? true : false}
           checked={options.feedIndex === 1 ? true : false}
           onClick={() => {
-            if (vizThreeData[1] !== null) {
+            if (threeData[1] !== null) {
               dispatch(setFeedIndex(1));
             }
           }}
@@ -57,10 +42,10 @@ const Options = () => {
           name={"Past 7 Days"}
           mobileName={"7D"}
           opacity={isDataAvailable[3]}
-          disabled={vizThreeData[3] === null ? true : false}
+          disabled={threeData[3] === null ? true : false}
           checked={options.feedIndex === 3 ? true : false}
           onClick={() => {
-            if (vizThreeData[3] !== null) {
+            if (threeData[3] !== null) {
               dispatch(setFeedIndex(3));
             }
           }}
@@ -70,10 +55,10 @@ const Options = () => {
           name={"Past 30 Days"}
           mobileName={"30D"}
           opacity={isDataAvailable[4]}
-          disabled={vizThreeData[4] === null ? true : false}
+          disabled={threeData[4] === null ? true : false}
           checked={options.feedIndex === 4 ? true : false}
           onClick={() => {
-            if (vizThreeData[4] !== null) {
+            if (threeData[4] !== null) {
               dispatch(setFeedIndex(4));
             }
           }}

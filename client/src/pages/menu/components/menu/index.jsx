@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { navigate } from "@reach/router";
 import { Dropdown, Table, Button, Progress } from "semantic-ui-react";
-import { getByteLengths, dropdownOptions, xhrReq } from "@/helpers/menu.js";
+import { getByteLengths, dropdownOptions, xhrReq } from "@/helpers/menuMenu.js";
 import "./index.scss";
 
 const indexedDB =
