@@ -3,7 +3,7 @@ import { Modal, Button } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setModalText } from "@/redux/reducers/modalSlice";
 
-const AppModal = ({ modalOpen, setModalOpen }) => {
+const AppModal = ({ modalOpen }) => {
   const modalText = useSelector((state) => state.modal.modalText);
   const dispatch = useDispatch();
 
@@ -12,8 +12,7 @@ const AppModal = ({ modalOpen, setModalOpen }) => {
       <Modal.Header>{modalText}</Modal.Header>
       <Button
         onClick={() => {
-          setModalOpen(false);
-          dispatch(setModalText(""));
+          dispatch(setModalText("")); // Closes Modal
         }}
       >
         Okay

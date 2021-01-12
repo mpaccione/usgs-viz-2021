@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setSearchWord } from "@/redux/reducers/vizSlice";
 
 const SearchField = () => {
-  const searchWord = useSelector(state.viz.searchWord);
+  const searchWord = useSelector(state => state.viz.searchWord);
   const [search, setSearch] = useState();
   const dispatch = useDispatch();
 
