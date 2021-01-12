@@ -122,4 +122,4 @@ const Options = ({mobile, options, threeData, vizTextureRendered}) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Options);
+export default Options;

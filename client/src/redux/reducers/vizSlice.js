@@ -33,7 +33,7 @@ const vizSlice = createSlice({
       state.quakes = newQuakesObj;
       return state;
     },
-    setSelectedQuake: (state, action) => {
+    setSelectedQuakeIndex: (state, action) => {
       state.previousQuakeIndex = state.selectedQuakeIndex;
       state.selectedQuakeIndex = action.payload;
       return state;
@@ -56,7 +56,7 @@ const vizSlice = createSlice({
 export const {
   setQuakes,
   setQuakesByIndex,
-  setSelectedQuake,
+  setSelectedQuakeIndex,
   setThreeData,
   setVizTextureRendered,
   setSearchWord

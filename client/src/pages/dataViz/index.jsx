@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from "semantic-ui-react"
+import { useSelector } from "react-redux"
 import List from "@/pages/dataViz/components/list/index.jsx"
 import Options from "@/pages/dataViz/components/options/index.jsx"
 import Animation from "@/pages/dataViz/components/animation/index.jsx"

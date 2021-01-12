@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Table, Column } from "react-virtualized";
-import SearchResult from "@/pages/dataViz/components/searchResult.jsx";
+// import SearchResult from "@/pages/dataViz/components/searchResult.jsx";
 import SearchField from "@/pages/dataViz/components/list/searchField.jsx";
 import { setSelectedQuakeIndex } from "@/redux/reducers/vizSlice";
 import { timeClass, formattedQuakeCount } from "@/helpers/dataVizList.js";
@@ -49,7 +49,7 @@ const List = ({feedIndex, feedTitle, quakes, selectedQuakeIndex}) => {
         />
         <Column width={45} dataKey="magnitude" label="Mag." />
       </Table>
-      <SearchResult />
+      {/* <SearchResult /> */}
     </div>
   );
 };

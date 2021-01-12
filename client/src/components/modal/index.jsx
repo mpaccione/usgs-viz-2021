@@ -1,9 +1,9 @@
 import React from "react";
 import { Modal, Button } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setModalText } from "@/components/modal/index.js";
+import { setModalText } from "@/redux/reducers/modalSlice";
 
-const Modal = ({ modalOpen, setModalOpen }) => {
+const AppModal = ({ modalOpen, setModalOpen }) => {
   const modalText = useSelector((state) => state.modal.modalText);
   const dispatch = useDispatch();
 
@@ -22,4 +22,4 @@ const Modal = ({ modalOpen, setModalOpen }) => {
   );
 };
 
-export default Modal;
+export default AppModal;
