@@ -4,6 +4,7 @@ import { isDataAvailable } from "@/helpers/dataVizOptions.js";
 import RotationOption from "./rotationOption";
 import TextureOption from "./textureOption";
 import TimeOption from "./timeOption";
+import { setAutoRotation, setClickXRotation, setClickYRotation } from "@/redux/reducers/optionSlice.js"
 
 const Options = ({mobile, options, threeData, vizTextureRendered}) => {
   const dispatch = useDispatch();
@@ -70,7 +71,7 @@ const Options = ({mobile, options, threeData, vizTextureRendered}) => {
           <RotationOption
             name={"Auto X Rotation"}
             checked={options.autoRotation}
-            onClick={dispatch(setAutoRoation(!options.autoRotation))}
+            onClick={dispatch(setAutoRotation(!options.autoRotation))}
             disabled={false}
           />
           <RotationOption

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
+import * as OrbitControls from "three-orbitcontrols";
 import {
   EffectComposer,
   EffectPass,
@@ -7,6 +8,8 @@ import {
   BloomEffect,
   BlendFunction,
 } from "postprocessing";
+import { setModalText } from '@/redux/reducers/modalSlice.js'
+import store from "@/redux/store.js"
 
 export const vizAnimation = (WIDTH, HEIGHT) => {
   const POS_X = 1800;
@@ -15,19 +18,9 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   const FOV = 50;
   const NEAR = 1;
   const FAR = 10000;
-
-  // Scene Loader Obj for Improved Loading UX
-  //   Scene.sceneLoader = {
-  //     skybox: null,
-  //     spotlight: null,
-  //     ambient: null,
-  //     world: null,
-  //     sky: null,
-  //     data: null,
-  //   };
-
-  // mobile check and touch check
-  //this.touch = "ontouchstart" in document.documentElement ? true : false;
+  const RESOLUTION = WIDTH < 1440 ? "1k" : "4k";
+  const SM_RESOLUTION = WIDTH < 1440 ? "512" : "1k";
+  const STATE = store.getState();
 
   // SCENE
   const Scene = new THREE.Scene();
@@ -39,14 +32,26 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
   Scene.camera.position.set(POS_X, POS_Y, POS_Z);
   Scene.camera.lookAt(new THREE.Vector3(0, 0, 0));
-  Scene.scene.add(Scene.camera);
+  Scene.add(Scene.camera);
 
   // RENDERER
   Scene.renderer = new THREE.WebGLRenderer({ antialias: true });
   Scene.renderer.setClearColor(0x000000);
   Scene.renderer.setSize(WIDTH, HEIGHT);
   Scene.renderer.domElement.id = "vizCanvas";
-  Scene.mount.appendChild(Scene.renderer.domElement);
+
+  // Scene Loader Obj for Improved Loading UX
+  Scene.sceneLoader = {
+    skybox: null,
+    spotlight: null,
+    ambient: null,
+    world: null,
+    sky: null,
+    data: null,
+  };
+
+  // mobile check and touch check
+  Scene.touch = "ontouchstart" in document.documentElement ? true : false;
 
   // LOADER
   Scene.loader = new THREE.TextureLoader();
@@ -57,7 +62,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   Scene.cloudObj.name = "cloud";
   Scene.worldObj = new THREE.Object3D();
   Scene.worldObj.name = "world";
-  Scene.dataArray = [];
+  Scene.dataArray = [null, null, null, null];
 
   // GEOMETRY
   Scene.spGeo = new THREE.SphereBufferGeometry(600, 50, 50);
@@ -101,6 +106,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
   // FUNCS
   Scene.start = () => {
+    Scene.mount.appendChild(Scene.renderer.domElement); // Called after DOM Loaded
     Scene.frameId = requestAnimationFrame(Scene.animate);
   };
 
@@ -124,17 +130,295 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     );
   };
 
-  Scene.addData = (threeData, feedIndex) => {
+  // preloader
+  Scene.addPreloaderGlobe = () => {
+    const geometry = new THREE.SphereBufferGeometry(600, 20, 20);
+    const material = new THREE.MeshBasicMaterial({
+        color: "#25963e",
+        wireframe: true,
+        transparent: true,
+      });
+    const preloaderGlobe = new THREE.Mesh(geometry, material);
+
+    preloaderGlobe.name = "preloaderGlobe";
+    Scene.add(preloaderGlobe);
+  };
+
+  Scene.removePreloaderGlobe = () => {
+    Scene.remove(Scene.getObjectByName("preloaderGlobe"));
+  };
+
+  Scene.addData = () => {
     // Quake Lines rendered SSR and stored in mem
     const objLoader = new THREE.ObjectLoader();
+    const { threeData } = STATE.viz
+    const { feedIndex } = STATE.option
 
-    Scene.dataArray[0] = threeData[0] !== null ? objLoader.parse(threeData[0]) : null;
-    Scene.dataArray[1] = threeData[1] !== null ? objLoader.parse(threeData[1]) : null;
-    Scene.dataArray[2] = threeData[2] !== null ? objLoader.parse(threeData[2]) : null;
-    Scene.dataArray[3] = threeData[3] !== null ? objLoader.parse(threeData[3]) : null;
+    console.log("dataArray")
+    console.log(Scene.dataArray)
+
+    Scene.dataArray[0] =
+      threeData[0] !== null ? objLoader.parse(threeData[0]) : null;
+    Scene.dataArray[1] =
+      threeData[1] !== null ? objLoader.parse(threeData[1]) : null;
+    Scene.dataArray[2] =
+      threeData[2] !== null ? objLoader.parse(threeData[2]) : null;
+    Scene.dataArray[3] =
+      threeData[3] !== null ? objLoader.parse(threeData[3]) : null;
 
     Scene.sceneLoader.data = Scene.dataArray[feedIndex];
-  }
+  };
+
+  // remove data when switching earthquake timescales
+  Scene.removeTimeFrameData = (prevFeedIndex) => {
+    // console.log("removeTimeFrameData");
+    store.dispatch(setAutoRotation(false));
+    Scene.stop();
+    // Remove selected quake
+    if (Scene.getObjectByName("selectedQuake")) {
+      Scene.getObjectByName("world").remove(
+        Scene.getObjectByName("selectedQuake")
+      );
+    }
+    Scene.getObjectByName("world").remove(
+      Scene.getObjectByName(`data${prevFeedIndex}`)
+    );
+    Scene.getObjectByName("world").add(Scene.dataArray[feedIndex]);
+    Scene.rotationReset();
+    Scene.start();
+  };
+
+  // change globe type
+  Scene.changeGlobe = () => {
+    store.dispatch(setAutoRotation(false));
+    Scene.stop();
+    // change texture code here
+    const cloud = Scene.getObjectByName("cloud");
+    const world = Scene.getObjectByName("world").children[1];
+    let imgSrc;
+
+    // Change Globe imgSrc
+    if (simulationGlobe || physicalGlobe) {
+      imgSrc = `earthmap${RESOLUTION}_optimized.jpg`;
+    } else if (politicalGlobe) {
+      imgSrc = `politicalmap${RESOLUTION}_optimized.jpg`;
+    } else if (tectonicGlobe) {
+      imgSrc = `tectonic${RESOLUTION}_optimized.jpg`;
+    }
+
+    Scene.loader.load(
+      imgSrc,
+      (texture) => {
+        // const texture = new THREE.CanvasTexture(imgBitmap);
+
+        // Change Globe Lighting
+        if (simulationGlobe || physicalGlobe) {
+          Scene.ambientLight.intensity = 0.1;
+          Scene.spotlight.intensity = 0.9;
+        } else if (politicalGlobe || tectonicGlobe) {
+          Scene.ambientLight.intensity = 1;
+          Scene.spotlight.intensity = 0;
+        }
+
+        // Remove or Add Simulation Clouds
+        simulationGlobe === true
+          ? Scene.add(Scene.cloudObj)
+          : Scene.remove(cloud);
+
+        world.material.map = texture;
+        world.material.needsUpdate = true;
+      },
+      undefined, // onProgress calback unsupported
+      (error) => {
+        console.log("Loader Error");
+        console.log(error);
+        store.dispatch(setModalText("Globe Texture Failed to Download"));
+      }
+    );
+    Scene.start();
+  };
+
+  // rotation reset
+  Scene.rotationReset = () => {
+    Scene.worldObj.rotation.y = 0;
+    if (simulationGlobe === true) {
+      Scene.cloudObj.rotation.y = 0;
+    }
+    Scene.getObjectByName(`data${feedIndex}`).rotation.y = 0;
+  };
+
+  // add a simple light
+  Scene.addLights = () => {
+    // console.log("Shining the Sun");
+    Scene.ambientLight = new THREE.AmbientLight(0xffffff);
+    Scene.spotlight = new THREE.DirectionalLight(0xffffff, 0.9);
+
+    Scene.ambientLight.intensity = 0.1;
+    Scene.ambientLight.updateMatrix();
+    Scene.spotlight.position.set(
+      Scene.camera.position.x,
+      Scene.camera.position.y,
+      Scene.camera.position.z
+    );
+    Scene.spotlight.lookAt(new THREE.Vector3(0, 0, 0));
+    Scene.sceneLoader.spotlight = Scene.spotlight;
+    Scene.sceneLoader.ambient = Scene.ambientLight;
+  };
+
+  // add earths core
+  Scene.addCore = () => {
+    // console.log("Creating Molten Core");
+    const url = `moltenCore${SM_RESOLUTION}_optimized.jpg`
+
+    Scene.loader.load(
+      url,
+      (img) => {
+        // const coreTexture = new THREE.CanvasTexture(imgBitmap),
+        const earthCore = new THREE.MeshBasicMaterial({
+            map: img,
+            side: THREE.BackSide,
+          }),
+          core = new THREE.Mesh(Scene.spGeo, earthCore);
+
+        core.scale.set(0.985, 0.985, 0.985);
+        Scene.worldObj.add(core);
+      },
+      undefined, // onProgress calback unsupported
+      (error) => {
+        console.log("Loader Error");
+        console.log(error);
+        store.dispatch(setModalText("Error Loading Molten Core Texture Map"));
+      }
+    );
+  };
+
+  // add the earth
+  Scene.addEarth = () => {
+    // console.log("Creating Earth");
+    const bump = `earthbump${RESOLUTION}_optimized.jpg`
+    const specular = `earthspec${RESOLUTION}_optimized.jpg`
+    const texture = `earthmap${RESOLUTION}_optimized.jpg`;
+
+    Scene.loader.load(
+      texture,
+      (planetTexture) => {
+        // const planetTexture = new THREE.CanvasTexture(imgBitmap);
+
+        Scene.loader.load(
+          bump,
+          (planetBump) => {
+            // const planetBump = new THREE.CanvasTexture(imgBitmap);
+
+            Scene.loader.load(
+              specular,
+              (planetSpecular) => {
+                // const planetSpecular = new THREE.CanvasTexture(imgBitmap),
+                const earthTexture = new THREE.MeshPhongMaterial({
+                    map: planetTexture,
+                    bumpMap: planetBump,
+                    bumpScale: 0.5,
+                    specularMap: planetSpecular,
+                  });
+                const earth = new THREE.Mesh(Scene.spGeo, earthTexture);
+
+                earth.name = "earth";
+                Scene.worldObj.add(earth);
+                Scene.sceneLoader.world = Scene.worldObj;
+              },
+              undefined, // onProgress calback unsupported
+              (error) => {
+                console.log("Loader Error");
+                console.log(error);
+                store.dispatch(setModalText("Error Loading Earth Specular Map"));
+              }
+            );
+          },
+          undefined, // onProgress calback unsupported
+          (error) => {
+            console.log("Loader Error");
+            console.log(error);
+            store.dispatch(setModalText("Error Loading Earth Bump Map"));
+          }
+        );
+      },
+      undefined, // onProgress calback unsupported
+      (error) => {
+        console.log("Loader Error");
+        console.log(error);
+        store.dispatch(setModalText("Error Loading Earth Texture Map"));
+      }
+    );
+  };
+
+  // add clouds
+  Scene.addClouds = () => {
+    // console.log("Adding Atmosphere");
+    const texture = `earthClouds${RESOLUTION}_optimized.jpg`
+
+    Scene.loader.load(
+      texture,
+      (cloudsTexture) => {
+        // const cloudsTexture  = new THREE.CanvasTexture(imgBitmap),
+        const materialClouds = new THREE.MeshPhongMaterial({
+          alphaMap: cloudsTexture,
+          transparent: true,
+          depthWrite: false,
+        });
+        const meshClouds = new THREE.Mesh(Scene.spGeo, materialClouds);
+
+        meshClouds.scale.set(1.015, 1.015, 1.015);
+        Scene.cloudObj.add(meshClouds);
+        Scene.sceneLoader.sky = Scene.cloudObj;
+      },
+      undefined, // onProgress calback unsupported
+      (error) => {
+        console.log("Loader Error");
+        console.log(error);
+        store.dispatch(setModalText("Error Loading Cloud Texture Map"));
+      }
+    );
+  };
+
+  // add space background
+  Scene.addSkybox = () => {
+    // console.log("Creating Universe");
+    const imgArray = [
+      "skybox_posx.png",
+      "skybox_negx.png",
+      "skybox_posy.png",
+      "skybox_negy.png",
+      "skybox_posz.png",
+      "skybox_negz.png",
+    ];
+    const materialArray = [];
+
+    for (let i = 0; i < 6; i++) {
+      Scene.loader.load(
+        imgArray[i],
+        (skyTexture) => {
+          const material = new THREE.MeshBasicMaterial({
+            map: skyTexture,
+            side: THREE.BackSide,
+          });
+
+          materialArray.push(material);
+        },
+        undefined, // onProgress calback unsupported
+        (error) => {
+          console.log("Loader Error");
+          console.log(error);
+          store.dispatch(setModalText("Error Loading Skybox Textures"));
+        }
+      );
+    }
+
+    const skyboxMaterial = new THREE.MeshFaceMaterial(materialArray);
+    const skyGeo = new THREE.BoxGeometry(5000, 5000, 5000, 1, 1, 1);
+    const sky = new THREE.Mesh(skyGeo, skyboxMaterial);
+
+    sky.name = "skybox";
+    Scene.sceneLoader.skybox = sky;
+  };
 
   // TODO: Test using direct access vs getObjectByName helper
 
@@ -146,7 +430,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     feedIndex,
   }) => {
     // console.log("cameraToQuake");
-    setAutoRotation(false);
+    store.dispatch(setAutoRotation(false));
     const altitude = 1400;
     const coeff = 1 + altitude / 600;
     const selectedQuake = quakes[feedIndex][selectedQuakeIndex];
@@ -177,6 +461,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
   // TODO: Ensure Props Passed Update
   Scene.animate = ({ autoRotation, selectedQuake }) => {
+    console.log("animate");
     if (autoRotation && !selectedQuake) {
       Scene.worldObj.rotation.y += 0.001;
       Scene.cloudObj.rotation.y += 0.0014;
@@ -217,18 +502,49 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     Scene.frameId = window.requestAnimationFrame(Scene.animate);
   };
 
-  // CALLS/INIT
-  Scene.addPreloaderGlobe();
-  Scene.startPreloader();
-  Scene.addLights();
-  Scene.addCore();
-  Scene.addEarth();
-  Scene.addClouds();
-  Scene.addSkybox();
-  Scene.addData();
-  Scene.sceneLoaderInit();
+  console.log(JSON.stringify(Scene))
+  sceneLoaderInit(Scene);
+
 
   return Scene;
+};
+
+const sceneLoaderInit = (SceneRef) => {
+  console.log({SceneRef})
+  // CALLS/INIT
+  SceneRef.addPreloaderGlobe();
+  SceneRef.startPreloader();
+  SceneRef.addLights();
+  SceneRef.addCore();
+  SceneRef.addEarth();
+  SceneRef.addClouds();
+  SceneRef.addSkybox();
+  SceneRef.addData();
+
+  // Loaded Check Loop
+  if (sceneLoaded(SceneRef)) {
+    for (const key in SceneRef.sceneLoader) {
+      // Order important - add data to world obj after world obj loaded into scene
+      key === "data" && SceneRef.sceneLoader[key] !== null
+        ? SceneRef.getObjectByName("world").add(SceneRef.sceneLoader[key])
+        : SceneRef.add(SceneRef.sceneLoader[key]);
+    }
+    SceneRef.removePreloaderGlobe();
+    SceneRef.stopPreloader();
+    SceneRef.start();
+    SceneRef.setVizTextureRendered(true);
+  } else {
+    setTimeout(() => sceneLoaderInit(SceneRef), 1000);
+  }
+};
+
+const sceneLoaded = (SceneRef) => {
+  for (const key in SceneRef.sceneLoader) {
+    if (SceneRef.sceneLoader[key] === null) {
+      return false;
+    }
+  }
+  return true;
 };
 
 const colorData = (percentage) => {
