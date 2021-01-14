@@ -1,13 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import { vizAnimation } from "@/helpers/dataVizAnimation";
 
 const { innerWidth, innerHeight } = window;
 const animationViz = vizAnimation(innerWidth, innerHeight);
 
 const Viz = () => {
+  const animationMountRef = useCallback((node) => {
+    if (node !== null) {
+      animationViz.mount = node;
+      animationViz.start();
+      animationViz.sceneLoaderInit(); // RENDER
+    }
+  }, []);
+
   useEffect(() => {
-    console.log({animationViz})
-    animationViz.sceneLoaderInit(); // RENDER
+    console.log({ animationViz });
     window.addEventListener("resize", resizeHandler);
     return () => {
       animationViz.stop();
@@ -25,9 +32,7 @@ const Viz = () => {
   return (
     <div
       style={{ width: innerWidth, height: innerHeight }}
-      ref={(mount) => {
-        animationViz.mount = mount;
-      }}
+      ref={animationMountRef}
     />
   );
 };

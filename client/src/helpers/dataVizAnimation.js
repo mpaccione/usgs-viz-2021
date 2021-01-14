@@ -25,6 +25,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
   // SCENE
   const Scene = new THREE.Scene();
+  Scene.loaded = false;
 
   // CAMERA
   Scene.camera = new THREE.PerspectiveCamera(FOV, WIDTH / HEIGHT, NEAR, FAR);
@@ -172,11 +173,11 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
       threeData[3] !== null ? objLoader.parse(threeData[3]) : null;
 
     Scene.sceneLoader.data = Scene.dataArray[feedIndex];
+    Scene.getObjectByName("world").add(Scene.dataArray[feedIndex])
   };
 
   // remove data when switching earthquake timescales
-  Scene.removeTimeFrameData = (prevFeedIndex) => {
-    // console.log("removeTimeFrameData");
+  Scene.changeTimeFrameData = (prevFeedIndex) => {
     store.dispatch(setAutoRotation(false));
     Scene.stop();
     // Remove selected quake
@@ -257,6 +258,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     // console.log("Shining the Sun");
     Scene.ambientLight = new THREE.AmbientLight(0xffffff);
     Scene.spotlight = new THREE.DirectionalLight(0xffffff, 0.9);
+    
 
     Scene.ambientLight.intensity = 0.1;
     Scene.ambientLight.updateMatrix();
@@ -468,42 +470,27 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   // TODO: Ensure Props Passed Update
   Scene.animate = ({ autoRotation, selectedQuake }) => {
     console.log("animate");
-    if (autoRotation && !selectedQuake) {
-      Scene.worldObj.rotation.y += 0.001;
-      Scene.cloudObj.rotation.y += 0.0014;
+    if (Scene.loaded){
       Scene.spotlight.position.set(
         Scene.camera.position.x,
         Scene.camera.position.y,
         Scene.camera.position.z
       );
-      Scene.composer.render(Scene.clock.getDelta());
-    } else if (!autoRotation && selectedQuake) {
-      Scene.cloudObj.rotation.y += 0.0004;
-      Scene.spotlight.position.set(
-        Scene.camera.position.x,
-        Scene.camera.position.y,
-        Scene.camera.position.z
-      );
-      Scene.composer.render(Scene.clock.getDelta());
-    } else if (autoRotation && selectedQuake) {
-      Scene.worldObj.rotation.y += 0.001;
-      Scene.cloudObj.rotation.y += 0.0014;
-      Scene.spotlight.position.set(
-        Scene.camera.position.x,
-        Scene.camera.position.y,
-        Scene.camera.position.z
-      );
-      Scene.composer.render(Scene.clock.getDelta());
-    } else {
-      Scene.cloudObj.rotation.y += 0.0004;
-      Scene.spotlight.position.set(
-        Scene.camera.position.x,
-        Scene.camera.position.y,
-        Scene.camera.position.z
-      );
-      Scene.composer.render(Scene.clock.getDelta());
+
+      if (autoRotation && !selectedQuake) {
+        Scene.worldObj.rotation.y += 0.001;
+        Scene.cloudObj.rotation.y += 0.0014;
+      } else if (!autoRotation && selectedQuake) {
+        Scene.cloudObj.rotation.y += 0.0004;
+      } else if (autoRotation && selectedQuake) {
+        Scene.worldObj.rotation.y += 0.001;
+        Scene.cloudObj.rotation.y += 0.0014;
+      } else if (Scene.loaded){
+        Scene.cloudObj.rotation.y += 0.0004;
+      }
     }
 
+    Scene.composer.render(Scene.clock.getDelta());
     TWEEN.update();
     Scene.frameId = window.requestAnimationFrame(Scene.animate);
   };
@@ -511,6 +498,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   //console.log(JSON.stringify(Scene))
   Scene.addPreloaderGlobe();
   Scene.startPreloader();
+  // Scene.start();
   Scene.sceneLoaderInit = () => {
     // RECURSIVE LOADER
     const sceneLoaded = () => {
@@ -537,7 +525,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
               break;
           }
           return false;
-        } else {
+        } else if (key !== "data"){
           delete Scene.sceneLoader[key];
         }
       }
@@ -554,8 +542,8 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
       }
       Scene.removePreloaderGlobe();
       Scene.stopPreloader();
-      Scene.start();
       store.dispatch(setVizTextureRendered(true));
+      Scene.loaded = true;
     } else {
       setTimeout(() => Scene.sceneLoaderInit(), 1000);
     }
