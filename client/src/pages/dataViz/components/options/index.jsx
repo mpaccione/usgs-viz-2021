@@ -4,9 +4,14 @@ import { isDataAvailable } from "@/helpers/dataVizOptions.js";
 import RotationOption from "./rotationOption";
 import TextureOption from "./textureOption";
 import TimeOption from "./timeOption";
-import { setAutoRotation, setClickXRotation, setClickYRotation } from "@/redux/reducers/optionSlice.js"
+import {
+  setAutoRotation,
+  setClickXRotation,
+  setClickYRotation,
+  setGlobe,
+} from "@/redux/reducers/optionSlice.js";
 
-const Options = ({mobile, options, threeData, vizTextureRendered}) => {
+const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
   const dispatch = useDispatch();
 
   return (
@@ -71,19 +76,25 @@ const Options = ({mobile, options, threeData, vizTextureRendered}) => {
           <RotationOption
             name={"Auto X Rotation"}
             checked={options.autoRotation}
-            onClick={dispatch(setAutoRotation(!options.autoRotation))}
+            onClick={() => {
+              dispatch(setAutoRotation(!options.autoRotation));
+            }}
             disabled={false}
           />
           <RotationOption
             name={"Click &amp; Drag X Rotation"}
             checked={!options.autoRotation}
-            onClick={dispatch(setClickXRotation(true))}
+            onClick={() => {
+              dispatch(setClickXRotation(true));
+            }}
             disabled={true}
           />
           <RotationOption
             name={"Click &amp; Drag Y Rotation"}
             checked={!options.autoRotation}
-            onClick={dispatch(setClickYRotation(true))}
+            onClick={() => {
+              dispatch(setClickYRotation(true));
+            }}
             disabled={true}
           />
         </div>
@@ -93,25 +104,33 @@ const Options = ({mobile, options, threeData, vizTextureRendered}) => {
           <TextureOption
             name={"Simulation"}
             checked={options.simulationGlobe}
-            onClick={dispatch(setSimulationGlobe(true))}
+            onClick={() => {
+              dispatch(setGlobe("simulationGlove"));
+            }}
             mobile={mobile}
           />
           <TextureOption
             name={"Physical"}
             checked={options.physicalGlobe}
-            onClick={dispatch(setPhysicalGlobe(true))}
+            onClick={() => {
+              dispatch(setGlobe("physicalGlobe"));
+            }}
             mobile={mobile}
           />
           <TextureOption
             name={"Political"}
             checked={options.politicalGlobe}
-            onClick={dispatch(setPoliticalGlobe(true))}
+            onClick={() => {
+              dispatch(setGlobe("politicalGlobe"));
+            }}
             mobile={mobile}
           />
           <TextureOption
             name={"Tectonic"}
             checked={options.tectonicGlobe}
-            onClick={dispatch(setTectonicGlobe(true))}
+            onClick={() => {
+              dispatch(setGlobe("tectonicGlobe"));
+            }}
             mobile={mobile}
           />
         </div>
