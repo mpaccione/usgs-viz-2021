@@ -21,7 +21,6 @@
 
     .triangle {
       position: absolute;
-      margin-top: -15px;
 
       &.hour {
         border-bottom-color: rgba(255, 179, 0, 1) !important;
@@ -48,6 +47,10 @@
       padding: 10px 5%;
       // border-top: 1px solid #1a1a1a;
       // border-bottom: 1px solid #1a1a1a;
+    }
+
+    input[type="checkbox"]{
+        cursor: pointer;
     }
   }
 }

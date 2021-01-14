@@ -17,6 +17,11 @@ canvas {
 
 // Some Shared Styles
 
+hr {
+    border-color: #333;
+    margin-bottom: 0px;
+}
+
 #leftMenu,
 #rightMenu {
   z-index: 99;
@@ -29,6 +34,10 @@ canvas {
   backface-visibility: hidden;
   overflow: auto;
   top: 0;
+}
+
+.ReactVirtualized__Table__headerRow {
+    display: none !important;
 }
 
 .triangle .ReactVirtualized__Table__rowColumn:nth-of-type(1),

@@ -10,7 +10,10 @@ import {
 } from "postprocessing";
 import { setModalText } from "@/redux/reducers/modalSlice.js";
 import { setVizTextureRendered } from "@/redux/reducers/vizSlice.js";
-import { setSimulationGlobe } from "@/redux/reducers/optionSlice.js";
+import {
+  setAutoRotation,
+  setSimulationGlobe,
+} from "@/redux/reducers/optionSlice.js";
 import store from "@/redux/store.js";
 
 export const vizAnimation = (WIDTH, HEIGHT) => {
@@ -161,7 +164,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     // console.log("dataArray")
     // console.log(Scene.dataArray)
 
-    console.log({threeData})
+    console.log({ threeData });
 
     Scene.dataArray[0] =
       threeData[0] !== null ? objLoader.parse(threeData[0]) : null;
@@ -173,29 +176,29 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
       threeData[3] !== null ? objLoader.parse(threeData[3]) : null;
 
     Scene.sceneLoader.data = Scene.dataArray[feedIndex];
-    Scene.getObjectByName("world").add(Scene.dataArray[feedIndex])
+    Scene.getObjectByName("world").add(Scene.dataArray[feedIndex]);
   };
 
   // remove data when switching earthquake timescales
-  Scene.changeTimeFrameData = (prevFeedIndex) => {
+  Scene.changeTimeFrameData = (prevFeedIndex, newFeedIndex) => {
     store.dispatch(setAutoRotation(false));
     Scene.stop();
-    // Remove selected quake
-    if (Scene.getObjectByName("selectedQuake")) {
-      Scene.getObjectByName("world").remove(
-        Scene.getObjectByName("selectedQuake")
-      );
+    const selectedQuake = Scene.getObjectByName("selectedQuake");
+    const world = Scene.getObjectByName("world");
+    if (world) {
+      // Remove selected quake
+      if (selectedQuake) {
+        world.remove(selectedQuake);
+      }
+      world.remove(Scene.getObjectByName(`data${prevFeedIndex}`));
+      world.add(Scene.dataArray[newFeedIndex]);
     }
-    Scene.getObjectByName("world").remove(
-      Scene.getObjectByName(`data${prevFeedIndex}`)
-    );
-    Scene.getObjectByName("world").add(Scene.dataArray[feedIndex]);
-    Scene.rotationReset();
+    Scene.rotationReset(newFeedIndex);
     Scene.start();
   };
 
   // change globe type
-  Scene.changeGlobe = () => {
+  Scene.changeGlobe = (globe) => {
     store.dispatch(setAutoRotation(false));
     Scene.stop();
     // change texture code here
@@ -204,11 +207,11 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     let imgSrc;
 
     // Change Globe imgSrc
-    if (simulationGlobe || physicalGlobe) {
+    if (globe === "simulationGlobe" || globe === "physicalGlobe") {
       imgSrc = `earthmap${RESOLUTION}_optimized.jpg`;
-    } else if (politicalGlobe) {
+    } else if (globe === "politicalGlobe") {
       imgSrc = `politicalmap${RESOLUTION}_optimized.jpg`;
-    } else if (tectonicGlobe) {
+    } else if (globe === "tectonicGlobe") {
       imgSrc = `tectonic${RESOLUTION}_optimized.jpg`;
     }
 
@@ -218,16 +221,16 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
         // const texture = new THREE.CanvasTexture(imgBitmap);
 
         // Change Globe Lighting
-        if (simulationGlobe || physicalGlobe) {
+        if (globe === "simulationGlobe" || globe === "physicalGlobe") {
           Scene.ambientLight.intensity = 0.1;
           Scene.spotlight.intensity = 0.9;
-        } else if (politicalGlobe || tectonicGlobe) {
+        } else if (globe === "politicalGlobe" || globe === "tectonicGlobe") {
           Scene.ambientLight.intensity = 1;
           Scene.spotlight.intensity = 0;
         }
 
         // Remove or Add Simulation Clouds
-        simulationGlobe === true
+        globe === simulationGlobe
           ? Scene.add(Scene.cloudObj)
           : Scene.remove(cloud);
 
@@ -245,9 +248,9 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   };
 
   // rotation reset
-  Scene.rotationReset = () => {
+  Scene.rotationReset = (feedIndex) => {
     Scene.worldObj.rotation.y = 0;
-    if (simulationGlobe === true) {
+    if (Scene.simulationGlobe === true) { // TODO: Check this logic 
       Scene.cloudObj.rotation.y = 0;
     }
     Scene.getObjectByName(`data${feedIndex}`).rotation.y = 0;
@@ -258,7 +261,6 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     // console.log("Shining the Sun");
     Scene.ambientLight = new THREE.AmbientLight(0xffffff);
     Scene.spotlight = new THREE.DirectionalLight(0xffffff, 0.9);
-    
 
     Scene.ambientLight.intensity = 0.1;
     Scene.ambientLight.updateMatrix();
@@ -270,8 +272,8 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     Scene.spotlight.lookAt(new THREE.Vector3(0, 0, 0));
     Scene.sceneLoader.spotlight = Scene.spotlight;
     Scene.sceneLoader.ambient = Scene.ambientLight;
-    Scene.add(Scene.spotlight)
-    Scene.add(Scene.ambientLight)
+    Scene.add(Scene.spotlight);
+    Scene.add(Scene.ambientLight);
   };
 
   // add earths core
@@ -284,9 +286,9 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
       (img) => {
         // const coreTexture = new THREE.CanvasTexture(imgBitmap),
         const earthCore = new THREE.MeshBasicMaterial({
-            map: img,
-            side: THREE.BackSide,
-          })
+          map: img,
+          side: THREE.BackSide,
+        });
         const core = new THREE.Mesh(Scene.spGeo, earthCore);
 
         core.scale.set(0.985, 0.985, 0.985);
@@ -328,7 +330,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
                 earth.name = "earth";
                 Scene.worldObj.add(earth);
                 Scene.sceneLoader.world = Scene.worldObj;
-                Scene.add(Scene.worldObj)
+                Scene.add(Scene.worldObj);
               },
               undefined, // onProgress calback unsupported
               (error) => {
@@ -375,8 +377,8 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
         meshClouds.scale.set(1.015, 1.015, 1.015);
         Scene.cloudObj.add(meshClouds);
         Scene.sceneLoader.sky = Scene.cloudObj;
-        Scene.add(Scene.cloudObj)
-      }, 
+        Scene.add(Scene.cloudObj);
+      },
       undefined, // onProgress calback unsupported
       (error) => {
         console.log("Loader Error");
@@ -425,7 +427,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
     sky.name = "skybox";
     Scene.sceneLoader.skybox = sky;
-    Scene.add(sky)
+    Scene.add(sky);
   };
 
   // TODO: Test using direct access vs getObjectByName helper
@@ -470,7 +472,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   // TODO: Ensure Props Passed Update
   Scene.animate = ({ autoRotation, selectedQuake }) => {
     console.log("animate");
-    if (Scene.loaded){
+    if (Scene.loaded) {
       Scene.spotlight.position.set(
         Scene.camera.position.x,
         Scene.camera.position.y,
@@ -485,7 +487,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
       } else if (autoRotation && selectedQuake) {
         Scene.worldObj.rotation.y += 0.001;
         Scene.cloudObj.rotation.y += 0.0014;
-      } else if (Scene.loaded){
+      } else if (Scene.loaded) {
         Scene.cloudObj.rotation.y += 0.0004;
       }
     }
@@ -506,9 +508,9 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
         if (Scene.sceneLoader[key] === null) {
           console.log(`${key} not loaded!`);
           switch (key) {
-            case "ambient":  
+            case "ambient":
             case "spotlight":
-              Scene.addLights()
+              Scene.addLights();
               break;
             case "sky":
               Scene.addClouds();
@@ -525,13 +527,13 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
               break;
           }
           return false;
-        } else if (key !== "data"){
+        } else if (key !== "data") {
           delete Scene.sceneLoader[key];
         }
       }
       return true;
     };
-  
+
     // Loaded Check Loop
     if (sceneLoaded()) {
       for (const key in Scene.sceneLoader) {

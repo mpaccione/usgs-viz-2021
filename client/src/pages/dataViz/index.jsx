@@ -23,7 +23,7 @@ const DataViz = () => {
 
     return (
         <>
-            <List mobile={mobile} feedIndex={options.feedIndex} feedTitle={options.feedTitle} quakes={viz.quakes} threeData={viz.threeData} selectedQuakeIndex={viz.selectedQuakeIndex} />
+            <List mobile={mobile} feedIndex={options.feedIndex} feedTitle={options.feedTitle} quakes={viz.quakes} threeData={viz.threeData} selectedQuakeIndex={viz.selectedQuakeIndex} searchWord={viz.searchWord} />
             <Animation mobile={mobile} options={options} viz={viz} />
             <Options mobile={mobile} options={options} threeData={viz.threeData} vizTextureRendered={viz.vizTextureRendered} />
             <Modal open={modalText.length > 0} />

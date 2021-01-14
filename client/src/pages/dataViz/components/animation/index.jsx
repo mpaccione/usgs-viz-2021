@@ -1,10 +1,15 @@
 import React, { useEffect, useCallback } from "react";
+import { useSelector } from "react-redux"
 import { vizAnimation } from "@/helpers/dataVizAnimation";
 
 const { innerWidth, innerHeight } = window;
 const animationViz = vizAnimation(innerWidth, innerHeight);
 
 const Viz = () => {
+  // TODO: Implement Time DataSet Switching
+  // const feedIndex = useSelector(state => state.option.feedIndex)
+  // const prevFeedIndex = useSelector(state => state.option.prevFeedIndex)
+
   const animationMountRef = useCallback((node) => {
     if (node !== null) {
       animationViz.mount = node;
@@ -21,6 +26,12 @@ const Viz = () => {
       window.removeEventListener("resize", resizeHandler);
     };
   }, []);
+
+  // useEffect(() => {
+  //   if (prevFeedIndex){
+  //     animationViz.changeTimeFrameData(prevFeedIndex, feedIndex)
+  //   }
+  // }, [feedIndex])
 
   const resizeHandler = () => {
     const { innerWidth, innerHeight } = window;

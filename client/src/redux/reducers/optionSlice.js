@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  feedIndex: 3,
+  feedIndex: false,
+  prevFeedIndex: false,
   feedTitle: {
     0: "Earthquakes Past Hour",
     1: "Earthquakes Past Day",
@@ -25,10 +26,11 @@ const globeTypes = [
 ];
 
 const optionSlice = createSlice({
-  name: "options",
+  name: "option",
   initialState,
   reducers: {
     setFeedIndex: (state, action) => {
+      state.prevFeedIndex = state.feedIndex;
       state.feedIndex = action.payload;
       return state;
     },

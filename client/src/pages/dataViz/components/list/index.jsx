@@ -7,7 +7,7 @@ import { setSelectedQuakeIndex } from "@/redux/reducers/vizSlice";
 import { timeClass, formattedQuakeCount } from "@/helpers/dataVizList.js";
 import "./index.scss";
 
-const List = ({ mobile, feedIndex, feedTitle, quakes, selectedQuakeIndex }) => {
+const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const dispatch = useDispatch();
 
@@ -37,8 +37,10 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, selectedQuakeIndex }) => {
           )}
           
         </h4> */}
+        <hr></hr>
+        <SearchField />
+        <hr></hr>
       </div>
-      <SearchField />
       <Table
         id="quakeResults"
         width={mobile ? window.innerWidth : window.innerWidth * 0.2}
@@ -62,13 +64,13 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, selectedQuakeIndex }) => {
           width={45}
           dataKey="magnitude"
           label="Mag."
-          cellDataGetter={({rowData, dataKey}) => {
+          cellDataGetter={({ rowData, dataKey }) => {
             // cellData.toFixed(2);
-            return rowData[dataKey].toFixed(2)
+            return rowData[dataKey].toFixed(2);
           }}
         />
       </Table>
-      <SearchList />
+      {searchWord.length > 0 && <SearchList />}
     </div>
   );
 };
