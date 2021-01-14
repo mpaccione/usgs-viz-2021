@@ -268,6 +268,8 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     Scene.spotlight.lookAt(new THREE.Vector3(0, 0, 0));
     Scene.sceneLoader.spotlight = Scene.spotlight;
     Scene.sceneLoader.ambient = Scene.ambientLight;
+    Scene.add(Scene.spotlight)
+    Scene.add(Scene.ambientLight)
   };
 
   // add earths core
@@ -282,8 +284,8 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
         const earthCore = new THREE.MeshBasicMaterial({
             map: img,
             side: THREE.BackSide,
-          }),
-          core = new THREE.Mesh(Scene.spGeo, earthCore);
+          })
+        const core = new THREE.Mesh(Scene.spGeo, earthCore);
 
         core.scale.set(0.985, 0.985, 0.985);
         Scene.worldObj.add(core);
@@ -324,6 +326,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
                 earth.name = "earth";
                 Scene.worldObj.add(earth);
                 Scene.sceneLoader.world = Scene.worldObj;
+                Scene.add(Scene.worldObj)
               },
               undefined, // onProgress calback unsupported
               (error) => {
@@ -370,7 +373,8 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
         meshClouds.scale.set(1.015, 1.015, 1.015);
         Scene.cloudObj.add(meshClouds);
         Scene.sceneLoader.sky = Scene.cloudObj;
-      },
+        Scene.add(Scene.cloudObj)
+      }, 
       undefined, // onProgress calback unsupported
       (error) => {
         console.log("Loader Error");
@@ -419,6 +423,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
     sky.name = "skybox";
     Scene.sceneLoader.skybox = sky;
+    Scene.add(sky)
   };
 
   // TODO: Test using direct access vs getObjectByName helper

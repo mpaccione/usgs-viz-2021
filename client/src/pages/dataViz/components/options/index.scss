@@ -2,13 +2,12 @@
   right: 0px;
 
   h4 {
-      padding: 15px;
-      text-align: center;
+    padding: 15px;
+    text-align: center;
   }
 
   li {
-      list-style-type: none
-      ;
+    list-style-type: none;
   }
 
   div {
@@ -21,17 +20,34 @@
     align-items: center;
 
     .triangle {
-        position: absolute;
+      position: absolute;
+      margin-top: -15px;
+
+      &.hour {
+        border-bottom-color: rgba(255, 179, 0, 1) !important;
+      }
+
+      &.day {
+        border-bottom-color: rgba(255, 179, 0, 0.75) !important;
+      }
+
+      &.week {
+        border-bottom-color: rgba(255, 179, 0, 0.5) !important;
+      }
+
+      &.month {
+        border-bottom-color: rgba(255, 179, 0, 0.25) !important;
+      }
     }
-    
+
     .textWrap {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        width: 90%;
-        padding: 10px 5%;
-        // border-top: 1px solid #1a1a1a;
-        // border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 90%;
+      padding: 10px 5%;
+      // border-top: 1px solid #1a1a1a;
+      // border-bottom: 1px solid #1a1a1a;
     }
   }
 }

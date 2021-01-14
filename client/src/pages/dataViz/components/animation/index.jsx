@@ -6,6 +6,7 @@ const animationViz = vizAnimation(innerWidth, innerHeight);
 
 const Viz = () => {
   useEffect(() => {
+    console.log({animationViz})
     animationViz.sceneLoaderInit(); // RENDER
     window.addEventListener("resize", resizeHandler);
     return () => {

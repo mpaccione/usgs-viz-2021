@@ -8,13 +8,14 @@ const TimeOption = ({
   disabled,
   checked,
   onClick,
+  className,
   mobile,
 }) => (
   <>
     {mobile ? (
       <>
         <div className="optionSetting">
-          <div className="triangle mobile"></div>
+          <div className={`triangle mobile ${className}`}></div>
           <div className="textWrap">
             <li
               className="mobile"
@@ -31,7 +32,7 @@ const TimeOption = ({
     ) : (
       <>
         <div className="optionSetting">
-          <div className="triangle desktop"></div>
+          <div className={`triangle desktop ${className}`}></div>
           <div className="textWrap">
             <li className="desktop" style={{ opacity }}>
               {name}

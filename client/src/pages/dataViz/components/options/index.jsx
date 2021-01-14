@@ -10,6 +10,7 @@ import {
   setClickYRotation,
   setGlobe,
 } from "@/redux/reducers/optionSlice.js";
+import { Loader } from "semantic-ui-react"
 import "./index.scss"
 
 const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
@@ -30,6 +31,7 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
               dispatch(setFeedIndex(0));
             }
           }}
+          className={"hour"}
           mobile={mobile}
         />
         <TimeOption
@@ -43,6 +45,7 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
               dispatch(setFeedIndex(1));
             }
           }}
+          className={"day"}
           mobile={mobile}
         />
         <TimeOption
@@ -56,6 +59,7 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
               dispatch(setFeedIndex(3));
             }
           }}
+          className={"week"}
           mobile={mobile}
         />
         <TimeOption
@@ -69,6 +73,7 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
               dispatch(setFeedIndex(4));
             }
           }}
+          className={"month"}
           mobile={mobile}
         />
       </div>
@@ -137,7 +142,7 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
         </div>
       )}
       {!vizTextureRendered && (
-        <h3 id="mobileLoadingText">Loading, Please Wait! :)</h3>
+        <h3 id="mobileLoadingText"><Loader>Loading</Loader></h3>
       )}
     </div>
   );

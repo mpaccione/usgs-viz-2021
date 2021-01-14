@@ -112,6 +112,7 @@
 
 .ReactVirtualized__Table__headerColumn {
   text-transform: none !important;
+  display: none;
 }
 
 .ReactVirtualized__Table__headerColumn:nth-of-type(1) {
@@ -126,8 +127,8 @@
   width: 100%;
   height: 50px;
   cursor: pointer;
-//   border-bottom: 1px solid #1a1a1a;
   display: flex;
+  align-items: center;
 }
 
 .ReactVirtualized__Table__row.selected,
