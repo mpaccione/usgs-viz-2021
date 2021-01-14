@@ -4,6 +4,7 @@ import List from "@/pages/dataViz/components/list/index.jsx"
 import Options from "@/pages/dataViz/components/options/index.jsx"
 import Animation from "@/pages/dataViz/components/animation/index.jsx"
 import Modal from "@/components/modal/index.jsx"
+import "./index.scss"
 
 const DataViz = () => {
     const options = useSelector(state => state.option)

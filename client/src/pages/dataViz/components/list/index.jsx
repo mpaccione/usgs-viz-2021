@@ -5,6 +5,7 @@ import SearchList from "@/pages/dataViz/components/list/searchList.jsx";
 import SearchField from "@/pages/dataViz/components/list/searchField.jsx";
 import { setSelectedQuakeIndex } from "@/redux/reducers/vizSlice";
 import { timeClass, formattedQuakeCount } from "@/helpers/dataVizList.js";
+import "./index.scss";
 
 const List = ({ mobile, feedIndex, feedTitle, quakes, selectedQuakeIndex }) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -13,11 +14,19 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, selectedQuakeIndex }) => {
   return (
     <div
       id="leftMenu"
-      className={mobile && showMobileMenu ? "expanded" : "contracted"}
+      className={
+        !mobile
+          ? "expanded"
+          : mobile && showMobileMenu
+          ? "expanded"
+          : "contracted"
+      }
     >
       <div id="quakeHeader">
-        <h4 id="quakeTitle">{feedTitle[feedIndex]}</h4>
-        <h4 id="quakeTotal">
+        <h4 id="quakeTitle">
+          {formattedQuakeCount(quakes, feedIndex)} {feedTitle[feedIndex]}
+        </h4>
+        {/* <h4 id="quakeTotal">
           {mobile && (
             <span
               className="down-arrow"
@@ -26,8 +35,8 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, selectedQuakeIndex }) => {
               }}
             ></span>
           )}
-          {formattedQuakeCount(quakes, feedIndex)}
-        </h4>
+          
+        </h4> */}
       </div>
       <SearchField />
       <Table
@@ -35,7 +44,7 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, selectedQuakeIndex }) => {
         width={mobile ? window.innerWidth : window.innerWidth * 0.2}
         height={window.innerHeight - 80}
         headerHeight={20}
-        rowHeight={50}
+        rowHeight={40}
         rowClassName={({ index }) => {
           return timeClass(quakes, feedIndex, index);
         }}
@@ -49,7 +58,15 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, selectedQuakeIndex }) => {
           dataKey="location"
           label="Location"
         />
-        <Column width={45} dataKey="magnitude" label="Mag." />
+        <Column
+          width={45}
+          dataKey="magnitude"
+          label="Mag."
+          cellDataGetter={({rowData, dataKey}) => {
+            // cellData.toFixed(2);
+            return rowData[dataKey].toFixed(2)
+          }}
+        />
       </Table>
       <SearchList />
     </div>

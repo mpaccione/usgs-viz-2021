@@ -1,0 +1,37 @@
+#rightMenu {
+  right: 0px;
+
+  h4 {
+      padding: 15px;
+      text-align: center;
+  }
+
+  li {
+      list-style-type: none
+      ;
+  }
+
+  div {
+    width: 100%;
+    display: block;
+  }
+
+  .optionSetting {
+    display: flex;
+    align-items: center;
+
+    .triangle {
+        position: absolute;
+    }
+    
+    .textWrap {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 90%;
+        padding: 10px 5%;
+        // border-top: 1px solid #1a1a1a;
+        // border-bottom: 1px solid #1a1a1a;
+    }
+  }
+}

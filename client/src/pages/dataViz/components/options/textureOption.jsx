@@ -1,40 +1,41 @@
 import React from "react";
+import { Input } from "semantic-ui-react"
 
 const TextureOption = ({ name, checked, onClick, mobile }) => (
   <>
     {mobile ? (
       <>
-        <div className="triangle hidden"></div>
-        <div className="topBorder one">
-          <li>
-            <input
-              id="simulationMap"
-              type="checkbox"
-              disabled=""
-              checked={checked}
-              onChange={() => {
-                onClick();
-              }}
-            />
-          </li>
+        <div className="optionSetting">
+          <div className="textWrap">
+            <li>
+              <Input
+                type="checkbox"
+                disabled=""
+                checked={checked}
+                onChange={() => {
+                  onClick();
+                }}
+              />
+            </li>
+          </div>
         </div>
       </>
     ) : (
       <>
-        <div className="triangle hidden"></div>
-        <div className="topBorder one">
-          <li className="desktop">{name} Globe</li>
-          <li>
-            <input
-              id="simulationMap"
-              type="checkbox"
-              disabled=""
-              checked={checked}
-              onChange={() => {
-                onClick();
-              }}
-            />
-          </li>
+        <div className="optionSetting">
+          <div className="textWrap">
+            <li className="desktop">{name} Globe</li>
+            <li>
+              <Input
+                type="checkbox"
+                disabled=""
+                checked={checked}
+                onChange={() => {
+                  onClick();
+                }}
+              />
+            </li>
+          </div>
         </div>
       </>
     )}

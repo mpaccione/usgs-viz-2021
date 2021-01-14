@@ -1,13 +1,12 @@
 import React from "react";
+import { Input } from "semantic-ui-react"
 
 const RotationOption = ({ name, checked, onClick, disabled }) => (
-  <>
-    <div className="triangle hidden desktop"></div>
-    <div className="topBorder desktop">
+  <div className="optionSetting">
+    <div className="textWrap">
       <li>{name}</li>
       <li>
-        <input
-          id="autoRotation"
+        <Input
           type="checkbox"
           checked={checked}
           onChange={() => {
@@ -17,7 +16,7 @@ const RotationOption = ({ name, checked, onClick, disabled }) => (
         />
       </li>
     </div>
-  </>
+  </div>
 );
 
 export default RotationOption;

@@ -1,4 +1,5 @@
 import React from "react";
+import { Input } from "semantic-ui-react";
 
 const TimeOption = ({
   name,
@@ -12,36 +13,40 @@ const TimeOption = ({
   <>
     {mobile ? (
       <>
-        <div className="timeSetting">
-          <div className="triangle hour mobile"></div>
-          <li
-            className="mobile"
-            style={{ opacity }}
-            onClick={() => {
-              onClick();
-            }}
-          >
-            {mobileName}
-          </li>
+        <div className="optionSetting">
+          <div className="triangle mobile"></div>
+          <div className="textWrap">
+            <li
+              className="mobile"
+              style={{ opacity }}
+              onClick={() => {
+                onClick();
+              }}
+            >
+              {mobileName}
+            </li>
+          </div>
         </div>
       </>
     ) : (
       <>
-        <div className="triangle hour desktop"></div>
-        <div className="timeSetting">
-          <li className="desktop" style={{ opacity }}>
-            {name}
-          </li>
-          <li>
-            <input
-              type="checkbox"
-              disabled={disabled}
-              checked={checked}
-              onChange={() => {
-                onClick();
-              }}
-            />
-          </li>
+        <div className="optionSetting">
+          <div className="triangle desktop"></div>
+          <div className="textWrap">
+            <li className="desktop" style={{ opacity }}>
+              {name}
+            </li>
+            <li>
+              <Input
+                type="checkbox"
+                disabled={disabled}
+                checked={checked}
+                onChange={() => {
+                  onClick();
+                }}
+              />
+            </li>
+          </div>
         </div>
       </>
     )}

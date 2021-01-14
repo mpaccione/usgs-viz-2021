@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Button, Input } from "semantic-ui-react";
+import { Button, Input, Icon } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchWord } from "@/redux/reducers/vizSlice";
 
 const SearchField = () => {
   const searchWord = useSelector(state => state.viz.searchWord);
-  const [search, setSearch] = useState();
+  const [search, setSearch] = useState("");
   const dispatch = useDispatch();
 
   return (
@@ -18,6 +18,7 @@ const SearchField = () => {
             placeholder="Enter Location Search"
             value={search}
             onChange={(e) => {
+              console.log({e})
               setSearch(e.target.value);
             }}
             onKeyUp={(e) => {
@@ -34,7 +35,7 @@ const SearchField = () => {
               }
             }}
           >
-            Search
+            <Icon name="search" />
           </Button>
         </div>
       ) : (

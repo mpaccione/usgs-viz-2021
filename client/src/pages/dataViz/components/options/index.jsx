@@ -10,13 +10,14 @@ import {
   setClickYRotation,
   setGlobe,
 } from "@/redux/reducers/optionSlice.js";
+import "./index.scss"
 
 const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
   const dispatch = useDispatch();
 
   return (
     <div id="rightMenu">
-      <h4 className="desktop">Settings</h4>
+      {!mobile && <h4>Settings</h4>}
       <div className={"menuSection"}>
         <TimeOption
           name={"Past Hour"}
@@ -82,7 +83,7 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
             disabled={false}
           />
           <RotationOption
-            name={"Click &amp; Drag X Rotation"}
+            name={"Click & Drag X Rotation"}
             checked={!options.autoRotation}
             onClick={() => {
               dispatch(setClickXRotation(true));
@@ -90,7 +91,7 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
             disabled={true}
           />
           <RotationOption
-            name={"Click &amp; Drag Y Rotation"}
+            name={"Click & Drag Y Rotation"}
             checked={!options.autoRotation}
             onClick={() => {
               dispatch(setClickYRotation(true));
