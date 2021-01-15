@@ -7,7 +7,7 @@ import {
   setVizInitSuccess
 } from "@/redux/reducers/menuSlice.js";
 import { setThreeData, setQuakes } from "@/redux/reducers/vizSlice.js";
-import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
+//import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
 
 export const dropdownOptions = [
   {
@@ -117,7 +117,6 @@ export const getCacheData = (indexedDB, dispatch) => {
         batch(() => {
           dispatch(setProgressComplete(100));
           dispatch(setThreeData(result[0]));
-          dispatch(setFeedIndex(result[0]));
           dispatch(setVizInitSuccess(true));
         });
       }
@@ -163,7 +162,6 @@ export const putCacheData = (res, indexedDB, dispatch) => {
       dispatch(setQuakes(res[0]));
       dispatch(setThreeData(res[1]));
       // TODO: Create recursive function to get maximum feedIndex
-      dispatch(setFeedIndex(0)); // TEMP
       dispatch(setVizInitSuccess(true))
     });
   };

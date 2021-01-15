@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { navigate } from "@reach/router";
 import { Dropdown, Table, Button, Progress } from "semantic-ui-react";
 import { getByteLengths, dropdownOptions, xhrReq } from "@/helpers/menuMenu.js";
+import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
 import "./index.scss";
 
 const indexedDB =
@@ -73,6 +74,7 @@ const Menu = () => {
               </Table>
               <Button
                 onClick={() => {
+                  dispatch(setFeedIndex(selectValue))
                   xhrReq(byteLength, selectValue, indexedDB, dispatch); // Gets Viz Data, Stores in IndexedDB+Redux
                 }}
               >
@@ -83,7 +85,6 @@ const Menu = () => {
         </>
       ) : (
         <>
-          {/* TODO: Debug ByteLength MisMatch 3363602 vs 50123595 monthly */}
           <Progress percent={progressComplete} indicating />
           <h3>{preloaderText}</h3>
         </>
