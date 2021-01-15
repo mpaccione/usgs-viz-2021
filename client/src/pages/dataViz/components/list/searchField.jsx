@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button, Input, Icon, Form } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchWord } from "@/redux/reducers/vizSlice";
 
+const useFocus = () => {
+  const htmlElRef = useRef(null);
+  const setFocus = () => {
+    htmlElRef.current && htmlElRef.current.focus();
+  };
+
+  return [htmlElRef, setFocus];
+};
+
 const SearchField = () => {
-  const searchWord = useSelector(state => state.viz.searchWord);
+  const searchWord = useSelector((state) => state.viz.searchWord);
   const [search, setSearch] = useState("");
+  const [inputRef, setInputFocus] = useFocus();
   const dispatch = useDispatch();
 
   return (
@@ -18,13 +28,22 @@ const SearchField = () => {
             type="text"
             placeholder="Enter Location Search"
             value={search}
+            ref={inputRef}
+            onClick={
+              setInputFocus
+              // window.controls.enable = false;
+              // setTimeout(() => {
+              //   window.controls.enable = true;
+              // }, 1000);
+            }
             onChange={(e) => {
-              console.log({e})
+              console.log({ e });
               setSearch(e.target.value);
             }}
             onKeyUp={(e) => {
-              console.log(e)
+              console.log(e);
               if (e.key === "Enter" && search !== "") {
+                setSearch("");
                 dispatch(setSearchWord(searchWord));
               }
             }}
@@ -33,7 +52,7 @@ const SearchField = () => {
             id="searchButtonInactive"
             onClick={() => {
               if (search !== "") {
-                setSearch("")
+                setSearch("");
                 dispatch(setSearchWord(searchWord));
               }
             }}
@@ -48,8 +67,8 @@ const SearchField = () => {
           <Button
             id="searchButtonActive"
             onClick={() => {
-              setSearch("")
-              dispatch(setSearchWord(""))
+              setSearch("");
+              dispatch(setSearchWord(""));
             }}
           >
             Close Results

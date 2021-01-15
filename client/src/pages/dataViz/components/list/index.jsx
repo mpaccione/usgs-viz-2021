@@ -26,13 +26,17 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
       <div id="quakeHeader">
         <h4 id="quakeTitle">
           {formattedQuakeCount(quakes, feedIndex)} {feedTitle[feedIndex]}
-          {mobile && <SearchField />}
-          <Icon
-            name={`chevron ${showMobileMenu ? "up" : "down"}`}
-            onClick={() => {
-              setShowMobileMenu(!showMobileMenu);
-            }}
-          />
+          {mobile && (
+            <>
+              <SearchField />
+              <Icon
+                name={`chevron ${showMobileMenu ? "up" : "down"}`}
+                onClick={() => {
+                  setShowMobileMenu(!showMobileMenu);
+                }}
+              />
+            </>
+          )}
         </h4>
         {!mobile && (
           <>

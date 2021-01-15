@@ -13,7 +13,6 @@ const TextureOption = ({ name, checked, onClick, mobile }) => (
         <li>
           <Input
             type="checkbox"
-            disabled=""
             checked={checked}
             onChange={() => {
               onClick();

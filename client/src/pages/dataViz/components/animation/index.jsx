@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback } from "react";
 import { vizAnimation } from "@/helpers/dataVizAnimation";
-import { Scene } from "three";
 
 const { innerWidth, innerHeight } = window;
 const animationViz = vizAnimation(innerWidth, innerHeight);
@@ -52,7 +51,6 @@ const Viz = React.memo(
     // Changing Timeframe
     useEffect(() => {
       if (prevFeedIndex !== null) {
-        console.log({ prevFeedIndex, feedIndex });
         animationViz.changeTimeFrameData(prevFeedIndex, feedIndex);
       }
       prevFeedIndex = feedIndex;
@@ -73,7 +71,6 @@ const Viz = React.memo(
 
     // Changing Rotation
     useEffect(() => {
-      console.log("useEffect lockOrbit");
       if (
         prevClickXRotation !== null &&
         prevClickXRotation !== clickXRotation
@@ -97,7 +94,6 @@ const Viz = React.memo(
 
     // Changing Selected Quake
     useEffect(() => {
-      console.log(selectedQuake);
       if (selectedQuake !== undefined) {
         if (prevSelectedQuake !== selectedQuake) {
           console.log("cameraToQuake");
