@@ -139,20 +139,6 @@ hr {
 }
 
 @media (max-width: 1439px) {
-  .desktop,
-  #globe {
-    display: none !important;
-  }
-
-  .mobile {
-    display: inline-block;
-    padding-left: 15px;
-  }
-
-  #vizCanvas {
-    margin-top: -85px;
-  }
-
   #rightMenu {
     top: calc(100% - 100px);
     height: 100px;

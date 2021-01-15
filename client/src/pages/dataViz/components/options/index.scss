@@ -49,8 +49,29 @@
       // border-bottom: 1px solid #1a1a1a;
     }
 
-    input[type="checkbox"]{
-        cursor: pointer;
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+  }
+}
+
+@media (max-width: 1439px) {
+  #rightMenu {
+    display: flex;
+    flex-direction: row;
+
+    div {
+      width: 50% !important;
+      display: flex !important;
+      flex-direction: row;
+    }
+
+    hr {
+      display: none;
+    }
+
+    .optionSetting .textWrap {
+      align-items: center;
     }
   }
 }

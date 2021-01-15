@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Icon } from "semantic-ui-react";
+import { Button, Input, Icon, Form } from "semantic-ui-react";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchWord } from "@/redux/reducers/vizSlice";
 
@@ -12,6 +12,7 @@ const SearchField = () => {
     <>
       {searchWord === "" ? (
         <div id="searchField" className="inactive">
+          {/* <Form> */}
           <Input
             id="searchInput"
             type="text"
@@ -22,7 +23,8 @@ const SearchField = () => {
               setSearch(e.target.value);
             }}
             onKeyUp={(e) => {
-              if (e.key === "Enter" && searchWord !== "") {
+              console.log(e)
+              if (e.key === "Enter" && search !== "") {
                 dispatch(setSearchWord(searchWord));
               }
             }}
@@ -30,20 +32,23 @@ const SearchField = () => {
           <Button
             id="searchButtonInactive"
             onClick={() => {
-              if (searchWord !== "") {
+              if (search !== "") {
+                setSearch("")
                 dispatch(setSearchWord(searchWord));
               }
             }}
           >
             <Icon name="search" />
           </Button>
+          {/* </Form> */}
         </div>
       ) : (
         <div id="searchField" className="active">
           <Button
             id="searchButtonActive"
             onClick={() => {
-              this.makeSearch(false);
+              setSearch("")
+              dispatch(setSearchWord(""))
             }}
           >
             Close Results

@@ -26,17 +26,6 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
         <h4 id="quakeTitle">
           {formattedQuakeCount(quakes, feedIndex)} {feedTitle[feedIndex]}
         </h4>
-        {/* <h4 id="quakeTotal">
-          {mobile && (
-            <span
-              className="down-arrow"
-              onClick={() => {
-                setShowMobileMenu(!mobileMenuShow);
-              }}
-            ></span>
-          )}
-          
-        </h4> */}
         <hr></hr>
         <SearchField />
         <hr></hr>

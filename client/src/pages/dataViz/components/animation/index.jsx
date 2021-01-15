@@ -19,7 +19,6 @@ const Viz = React.memo(({ globes, feedIndex, clickXRotation, clickYRotation, aut
   }, []);
 
   useEffect(() => {
-    console.log({ animationViz });
     window.addEventListener("resize", resizeHandler);
     return () => {
       animationViz.stop();
@@ -61,7 +60,7 @@ const Viz = React.memo(({ globes, feedIndex, clickXRotation, clickYRotation, aut
     if (prevAutoRotation !== null && prevAutoRotation !== autoRotation){
       animationViz.setAutoRotation(autoRotation)
     }
-    
+
     prevClickXRotation = clickXRotation;
     prevClickYRotation = clickYRotation;
     prevAutoRotation = autoRotation;

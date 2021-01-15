@@ -84,7 +84,6 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   Scene.controls.maxDistance = 2800;
   
   Scene.lockOrbit = (boolean, axis) => {
-    console.log("lockOrbit")
     if (axis === "Y") {
       Scene.controls.minPolarAngle = boolean ? Math.PI / 2 : 0;
       Scene.controls.maxPolarAngle = boolean ? Math.PI / 2 : Math.PI;

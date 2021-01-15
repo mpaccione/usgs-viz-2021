@@ -7,6 +7,10 @@ body {
   background-color: #635241;
 }
 
+canvas {
+  margin: 0px !important;
+}
+
 ::-webkit-scrollbar {
   width: 12px;
   height: 100%;
@@ -80,3 +84,4 @@ body {
   transform: translateX(-50%) translateY(-50%);
   color: white;
 }
+
