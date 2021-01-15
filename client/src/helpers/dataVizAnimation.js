@@ -77,19 +77,19 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   Scene.clock = new THREE.Clock();
 
   // CONTROLS
-  window.controls = new OrbitControls(Scene.camera);
-  window.controls.enableZoom = true;
-  window.controls.enablePan = false;
-  window.controls.minDistance = 1000;
-  window.controls.maxDistance = 2800;
+  Scene.controls = new OrbitControls(Scene.camera);
+  Scene.controls.enableZoom = true;
+  Scene.controls.enablePan = false;
+  Scene.controls.minDistance = 1000;
+  Scene.controls.maxDistance = 2800;
 
   Scene.lockOrbit = (boolean, axis) => {
     if (axis === "Y") {
-      window.controls.minPolarAngle = boolean ? Math.PI / 2 : 0;
-      window.controls.maxPolarAngle = boolean ? Math.PI / 2 : Math.PI;
+      Scene.controls.minPolarAngle = boolean ? Math.PI / 2 : 0;
+      Scene.controls.maxPolarAngle = boolean ? Math.PI / 2 : Math.PI;
     } else {
-      window.controls.minAzimuthAngle = boolean ? Math.PI : -Infinity;
-      window.controls.maxAzimuthAngle = boolean ? Math.PI : Infinity;
+      Scene.controls.minAzimuthAngle = boolean ? Math.PI : -Infinity;
+      Scene.controls.maxAzimuthAngle = boolean ? Math.PI : Infinity;
     }
   };
 
@@ -604,12 +604,4 @@ const longLatToSphere = (long, lat, radius) => {
   const y = radius * Math.cos(phi);
 
   return new THREE.Vector3(x, y, z);
-};
-
-export const delay = () => {
-  let timer = 0;
-  return function (callback, ms) {
-    clearTimeout(timer);
-    timer = setTimeout(callback, ms);
-  };
 };

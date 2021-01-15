@@ -13,7 +13,7 @@ const DataViz = () => {
   const [mobile, setMobile] = useState(window.innerWidth < 1440 ? true : false);
 
   const resizeHandler = () => {
-    window.innerWidth < 1440 ? setMobile(true) : setMobile(false); // TODO: Throttle
+    window.innerWidth < 1440 ? setMobile(true) : setMobile(false);
   };
 
   useEffect(() => {
