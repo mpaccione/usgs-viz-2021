@@ -7,8 +7,9 @@ let prevFeedIndex = null;
 let prevGlobeType = null;
 let prevClickXRotation = null;
 let prevClickYRotation = null;
+let prevAutoRotation = null;
 
-const Viz = React.memo(({ globes, feedIndex, clickXRotation, clickYRotation }) => {
+const Viz = React.memo(({ globes, feedIndex, clickXRotation, clickYRotation, autoRotation }) => {
   const animationMountRef = useCallback((node) => {
     if (node !== null) {
       animationViz.mount = node;
@@ -57,9 +58,14 @@ const Viz = React.memo(({ globes, feedIndex, clickXRotation, clickYRotation }) =
     if (prevClickYRotation !== null && prevClickYRotation !== clickYRotation){
       animationViz.lockOrbit(!clickYRotation, "Y")
     }
+    if (prevAutoRotation !== null && prevAutoRotation !== autoRotation){
+      animationViz.setAutoRotation(autoRotation)
+    }
+    
     prevClickXRotation = clickXRotation;
     prevClickYRotation = clickYRotation;
-  }, [clickXRotation, clickYRotation])
+    prevAutoRotation = autoRotation;
+  }, [clickXRotation, clickYRotation, autoRotation])
 
   const resizeHandler = () => {
     const { innerWidth, innerHeight } = window;

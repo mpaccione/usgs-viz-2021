@@ -82,7 +82,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   Scene.controls.enablePan = false;
   Scene.controls.minDistance = 1000;
   Scene.controls.maxDistance = 2800;
-
+  
   Scene.lockOrbit = (boolean, axis) => {
     console.log("lockOrbit")
     if (axis === "Y") {
@@ -93,6 +93,11 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
       Scene.controls.maxAzimuthAngle = boolean ? Math.PI : Infinity;
     }
   };
+
+  Scene.autoRotation = true;
+  Scene.setAutoRotation = (boolean) => {
+    Scene.autoRotation = boolean;
+  }
 
   // EFFECTS
   const bloom = new BloomEffect({
@@ -478,8 +483,8 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     zoomToQuake.start();
   };
 
-  // TODO: Ensure Props Passed Update
-  Scene.animate = ({ autoRotation, selectedQuake }) => {
+  // TODO: Create addSelectedQuake and selectedQuake Scene key vals
+  Scene.animate = ({ selectedQuake }) => {
     if (Scene.loaded) {
       Scene.spotlight.position.set(
         Scene.camera.position.x,
@@ -487,12 +492,12 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
         Scene.camera.position.z
       );
 
-      if (autoRotation && !selectedQuake) {
+      if (Scene.autoRotation && !selectedQuake) {
         Scene.worldObj.rotation.y += 0.001;
         Scene.cloudObj.rotation.y += 0.0014;
-      } else if (!autoRotation && selectedQuake) {
+      } else if (!Scene.autoRotation && selectedQuake) {
         Scene.cloudObj.rotation.y += 0.0004;
-      } else if (autoRotation && selectedQuake) {
+      } else if (Scene.autoRotation && selectedQuake) {
         Scene.worldObj.rotation.y += 0.001;
         Scene.cloudObj.rotation.y += 0.0014;
       } else if (Scene.loaded) {
