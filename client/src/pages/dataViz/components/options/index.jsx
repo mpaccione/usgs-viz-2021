@@ -14,7 +14,7 @@ import {
 import { Loader } from "semantic-ui-react";
 import "./index.scss";
 
-const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
+const Options = React.memo(({ mobile, options, threeData, vizTextureRendered }) => {
   const dispatch = useDispatch();
 
   return (
@@ -162,6 +162,6 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
       )}
     </div>
   );
-};
+});
 
 export default Options;

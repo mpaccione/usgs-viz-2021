@@ -7,11 +7,12 @@ import { setSelectedQuakeIndex } from "@/redux/reducers/vizSlice";
 import { timeClass, formattedQuakeCount } from "@/helpers/dataVizList.js";
 import "./index.scss";
 
-const List = React.memo(
-  ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
+const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const [filteredData, setFilteredData] = useState(false);
     const dispatch = useDispatch();
+
+    // TODO: Add in Local State for Super Responsive Virtualized Table
 
     // Search Filtering
     useEffect(() => {
@@ -97,6 +98,6 @@ const List = React.memo(
       </div>
     );
   }
-);
+
 
 export default List;

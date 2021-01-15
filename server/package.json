@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "USGS 3D Earthwuake Visualizer (QuakeViz) Server",
+  "main": "./src/server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "author": "Michael Paccione",
+  "license": "SEE LICENSE IN README.me",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "cors": "^2.8.4",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.3.0",
+    "moment": "^2.29.1",
+    "mongodb": "^3.6.3",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.4.17",
+    "nodemon": "^2.0.6"
+  }
+}
