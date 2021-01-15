@@ -77,19 +77,19 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   Scene.clock = new THREE.Clock();
 
   // CONTROLS
-  Scene.controls = new OrbitControls(Scene.camera);
-  Scene.controls.enableZoom = true;
-  Scene.controls.enablePan = false;
-  Scene.controls.minDistance = 1000;
-  Scene.controls.maxDistance = 2800;
+  window.controls = new OrbitControls(Scene.camera);
+  window.controls.enableZoom = true;
+  window.controls.enablePan = false;
+  window.controls.minDistance = 1000;
+  window.controls.maxDistance = 2800;
 
   Scene.lockOrbit = (boolean, axis) => {
     if (axis === "Y") {
-      Scene.controls.minPolarAngle = boolean ? Math.PI / 2 : 0;
-      Scene.controls.maxPolarAngle = boolean ? Math.PI / 2 : Math.PI;
+      window.controls.minPolarAngle = boolean ? Math.PI / 2 : 0;
+      window.controls.maxPolarAngle = boolean ? Math.PI / 2 : Math.PI;
     } else {
-      Scene.controls.minAzimuthAngle = boolean ? Math.PI : -Infinity;
-      Scene.controls.maxAzimuthAngle = boolean ? Math.PI : Infinity;
+      window.controls.minAzimuthAngle = boolean ? Math.PI : -Infinity;
+      window.controls.maxAzimuthAngle = boolean ? Math.PI : Infinity;
     }
   };
 
@@ -121,7 +121,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     Scene.renderer.setSize(newWidth, newHeight);
   };
 
-  Scene.handleZoom = (e) => {
+  Scene.handleZoom = (e) => { 
     Scene.controls.enableZoom = e.type === "mouseenter" ? false : true;
   };
 
