@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Table, Column } from "react-virtualized";
+import { Icon } from "semantic-ui-react";
 import SearchList from "@/pages/dataViz/components/list/searchList.jsx";
 import SearchField from "@/pages/dataViz/components/list/searchField.jsx";
 import { setSelectedQuakeIndex } from "@/redux/reducers/vizSlice";
@@ -25,6 +26,12 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
       <div id="quakeHeader">
         <h4 id="quakeTitle">
           {formattedQuakeCount(quakes, feedIndex)} {feedTitle[feedIndex]}
+          <Icon
+            name={`chevron ${showMobileMenu ? "up" : "down"}`}
+            onClick={() => {
+              setShowMobileMenu(!showMobileMenu);
+            }}
+          />
         </h4>
         <hr></hr>
         <SearchField />
@@ -54,7 +61,6 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
           dataKey="magnitude"
           label="Mag."
           cellDataGetter={({ rowData, dataKey }) => {
-            // cellData.toFixed(2);
             return rowData[dataKey].toFixed(2);
           }}
         />

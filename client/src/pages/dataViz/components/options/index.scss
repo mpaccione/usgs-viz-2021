@@ -59,6 +59,7 @@
   #rightMenu {
     display: flex;
     flex-direction: row;
+    background-color: rgba(0,0,0,0.8) !important;
 
     div {
       width: 50% !important;
@@ -72,6 +73,10 @@
 
     .optionSetting .textWrap {
       align-items: center;
+
+      .mobile {
+        margin-right: 5px;
+      }
     }
   }
 }

@@ -216,13 +216,13 @@
   }
 }
 
-@keyframes pulse-expanded {
+@keyframes pulse {
   0% {
     transform: scale(1);
   }
 
   50% {
-    transform: scale(1.25);
+    transform: scale(1.3);
   }
 
   100% {
@@ -230,23 +230,35 @@
   }
 }
 
-@keyframes pulse-contracted {
-  0% {
-    transform: scale(1) rotate(180deg);
-  }
 
-  50% {
-    transform: scale(1.25) rotate(180deg);
-  }
-
-  100% {
-    transform: scale(1) rotate(180deg);
-  }
-}
 @media (max-width: 1439px) {
   #leftMenu {
-    width: 100%;
-    top: 0%;
+    width: 100% !important;
+    top: 0% !important;
+
+    &.contracted {
+      background-color: rgba(0,0,0,0.8);
+      height: 100px !important;
+    }
+
+    &.expanded {
+      background-color: rgba(0,0,0,0.8);
+      height: calc(100% - 100px) !important;
+    }
+
+    #quakeHeader {
+      background-color: transparent !important;
+      text-align: center;
+
+      #quakeTitle i {
+        display: block;
+        margin: auto;
+        cursor: pointer;
+        animation-name: pulse;
+        animation-iteration-count: infinite;
+        animation-duration: 1.5s;
+      }
+    }
 
     h4 {
       width: 50%;
@@ -266,12 +278,15 @@
       left: 0px;
     }
 
-    #searchField input {
-      width: calc(80% - 20px);
-    }
+    #searchField, hr {
+      display: none;
+      // input {
+      //   width: calc(80% - 20px);
+      // }
 
-    #searchField button {
-      width: calc(20% - 20px);
+      // button {
+      //   width: calc(20% - 20px);
+      // }
     }
 
     .searchActive {

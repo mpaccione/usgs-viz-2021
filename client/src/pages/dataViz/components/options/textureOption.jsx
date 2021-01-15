@@ -6,7 +6,7 @@ const TextureOption = ({ name, checked, onClick, mobile }) => (
     <div className="optionSetting">
       <div className="textWrap">
         {mobile ? (
-          <li className="desktop">{name.substring(0,4)}</li>
+          <li className="mobile">{name.substring(0,4)}</li>
         ) : (
           <li className="desktop">{name} Globe</li>
         )}
