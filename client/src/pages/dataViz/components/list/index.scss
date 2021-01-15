@@ -176,46 +176,6 @@
   border-top: 1px solid #333;
 }
 
-@keyframes searchActive {
-  0% {
-    left: -20%;
-  }
-
-  100% {
-    left: 0%;
-  }
-}
-
-@keyframes searchInactive {
-  0% {
-    left: 0%;
-  }
-
-  100% {
-    left: -20%;
-  }
-}
-
-@keyframes searchActive-mobile {
-  0% {
-    top: calc(100% - 45px);
-  }
-
-  100% {
-    top: 45px;
-  }
-}
-
-@keyframes searchInactive-mobile {
-  0% {
-    top: 45px;
-  }
-
-  100% {
-    top: calc(100% - 45px);
-  }
-}
-
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -229,7 +189,6 @@
     transform: scale(1);
   }
 }
-
 
 @media (max-width: 1439px) {
   #leftMenu {
@@ -250,7 +209,7 @@
       background-color: transparent !important;
       text-align: center;
 
-      #quakeTitle i {
+      #quakeTitle .chevron.icon {
         display: block;
         margin: auto;
         cursor: pointer;
@@ -278,15 +237,22 @@
       left: 0px;
     }
 
-    #searchField, hr {
-      display: none;
-      // input {
-      //   width: calc(80% - 20px);
-      // }
+    #searchField {
+     align-items: center; 
+     justify-content: center;
+     text-align: right;
 
-      // button {
-      //   width: calc(20% - 20px);
-      // }
+     input {
+      flex-basis: 95%;
+     }
+
+     button {
+      flex-basis: 5%;
+     }
+
+     i {
+       font-size: 12px;
+     }
     }
 
     .searchActive {

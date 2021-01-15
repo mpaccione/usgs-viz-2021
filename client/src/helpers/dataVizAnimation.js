@@ -82,7 +82,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   Scene.controls.enablePan = false;
   Scene.controls.minDistance = 1000;
   Scene.controls.maxDistance = 2800;
-  
+
   Scene.lockOrbit = (boolean, axis) => {
     if (axis === "Y") {
       Scene.controls.minPolarAngle = boolean ? Math.PI / 2 : 0;
@@ -96,7 +96,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   Scene.autoRotation = true;
   Scene.setAutoRotation = (boolean) => {
     Scene.autoRotation = boolean;
-  }
+  };
 
   // EFFECTS
   const bloom = new BloomEffect({
@@ -192,6 +192,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   // remove data when switching earthquake timescales
   Scene.changeTimeFrameData = (prevFeedIndex, newFeedIndex) => {
     store.dispatch(setAutoRotation(false));
+    Scene.setAutoRotation(false)
     Scene.stop();
     const selectedQuake = Scene.getObjectByName("selectedQuake");
     const world = Scene.getObjectByName("world");
@@ -210,6 +211,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   // change globe type
   Scene.changeGlobe = (globe) => {
     store.dispatch(setAutoRotation(false));
+    Scene.setAutoRotation(false)
     Scene.stop();
     // change texture code here
     const cloud = Scene.getObjectByName("cloud");
@@ -446,17 +448,12 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   // TODO: Test using direct access vs getObjectByName helper
 
   // Zoom to Selected Quake
-  Scene.cameraToQuake = ({
-    setAutoRotation,
-    selectedQuakeIndex,
-    quakes,
-    feedIndex,
-  }) => {
+  Scene.cameraToQuake = (selectedQuake) => {
     // console.log("cameraToQuake");
     store.dispatch(setAutoRotation(false));
+    Scene.setAutoRotation(false);
     const altitude = 1400;
     const coeff = 1 + altitude / 600;
-    const selectedQuake = quakes[feedIndex][selectedQuakeIndex];
     const { magnitude, coordinates } = selectedQuake;
     const quakeVector = longLatToSphere(coordinates[0], coordinates[1], 600);
     //
@@ -480,6 +477,29 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     Scene.addSelectedQuake(magnitude, x, y, z);
     worldUnrotate.start();
     zoomToQuake.start();
+  };
+
+  Scene.addSelectedQuake = (mag, vectorX, vectorY, vectorZ) => {
+    // console.log("addSelectedQuake");
+    const selectedRadius = mag * 5;
+    const selectedGeo = new THREE.SphereGeometry(selectedRadius, 50, 50);
+    const sphereColor = new THREE.Color(colorData(mag));
+    const selectedTexture = new THREE.MeshBasicMaterial({
+      color: sphereColor,
+      transparent: true,
+      opacity: 0.75,
+    });
+    const selectedMesh = new THREE.Mesh(selectedGeo, selectedTexture);
+
+    if (Scene.getObjectByName("selectedQuake")) {
+      Scene.getObjectByName("world").remove(
+        Scene.getObjectByName("selectedQuake")
+      ); // Remove old
+    }
+
+    selectedMesh.name = "selectedQuake";
+    selectedMesh.position.set(vectorX, vectorY, vectorZ);
+    Scene.getObjectByName("world").add(selectedMesh);
   };
 
   // TODO: Create addSelectedQuake and selectedQuake Scene key vals

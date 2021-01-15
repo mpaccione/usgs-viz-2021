@@ -43,6 +43,9 @@ const DataViz = () => {
           politicalGlobe: options.politicalGlobe,
           tectonicGlobe: options.tectonicGlobe,
         }}
+        selectedQuake={
+          viz.quakes[options.feedIndex][viz.selectedQuakeIndex]
+        }
       />
       <Options
         mobile={mobile}

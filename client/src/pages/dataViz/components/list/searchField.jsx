@@ -37,6 +37,7 @@ const SearchField = () => {
                 dispatch(setSearchWord(searchWord));
               }
             }}
+            icon
           >
             <Icon name="search" />
           </Button>

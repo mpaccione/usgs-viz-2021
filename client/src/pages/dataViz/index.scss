@@ -125,19 +125,6 @@ hr {
   pointer-events: none !important;
 }
 
-@media (max-width: 1440px) {
-  #searchButtonInactive {
-    background-image: url("../../assets/search.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    font-size: 0px;
-    height: 24px;
-    top: -6px;
-    position: relative;
-  }
-}
-
 @media (max-width: 1439px) {
   #rightMenu {
     top: calc(100% - 100px);
