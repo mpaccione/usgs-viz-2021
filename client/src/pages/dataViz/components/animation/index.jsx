@@ -1,12 +1,12 @@
 import React, { useEffect, useCallback } from "react";
-import { useSelector } from "react-redux";
 import { vizAnimation } from "@/helpers/dataVizAnimation";
 
 const { innerWidth, innerHeight } = window;
 const animationViz = vizAnimation(innerWidth, innerHeight);
 let prevFeedIndex = null;
+let prevGlobeType = null;
 
-const Viz = React.memo(({ feedIndex }) => {
+const Viz = React.memo(({ globes, feedIndex }) => {
   const animationMountRef = useCallback((node) => {
     if (node !== null) {
       animationViz.mount = node;
@@ -24,13 +24,28 @@ const Viz = React.memo(({ feedIndex }) => {
     };
   }, []);
 
+  // Changing Timeframe
   useEffect(() => {
-    if (prevFeedIndex !== null){
-      console.log({prevFeedIndex, feedIndex})
-      animationViz.changeTimeFrameData(prevFeedIndex, feedIndex)
+    if (prevFeedIndex !== null) {
+      console.log({ prevFeedIndex, feedIndex });
+      animationViz.changeTimeFrameData(prevFeedIndex, feedIndex);
     }
     prevFeedIndex = feedIndex;
-  }, [feedIndex])
+  }, [feedIndex]);
+
+  // Changing Texture
+  useEffect(() => {
+    const newGlobeType = Object.keys(globes).filter((key) => {
+      if (globes[key]) {
+        return key.toString(); // Return KeyName if Truthy
+      }
+    });
+    console.log({newGlobeType})
+    if (prevGlobeType !== null) {
+      animationViz.changeGlobe(newGlobeType[0]);
+    }
+    prevGlobeType = newGlobeType;
+  }, [globes]);
 
   const resizeHandler = () => {
     const { innerWidth, innerHeight } = window;

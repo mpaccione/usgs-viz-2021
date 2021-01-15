@@ -138,7 +138,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
   // preloader
   Scene.addPreloaderGlobe = () => {
-    const geometry = new THREE.SphereBufferGeometry(600, 20, 20);
+    const geometry = new THREE.SphereBufferGeometry(610, 20, 20);
     const material = new THREE.MeshBasicMaterial({
       color: "#25963e",
       wireframe: true,
@@ -160,11 +160,6 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     const STATE = store.getState();
     const { threeData } = STATE.viz;
     const { feedIndex } = STATE.option;
-
-    // console.log("dataArray")
-    // console.log(Scene.dataArray)
-
-    console.log({ threeData });
 
     Scene.dataArray[0] =
       threeData[0] !== null ? objLoader.parse(threeData[0]) : null;
@@ -207,19 +202,22 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     let imgSrc;
 
     // Change Globe imgSrc
-    if (globe === "simulationGlobe" || globe === "physicalGlobe") {
-      imgSrc = `earthmap${RESOLUTION}_optimized.jpg`;
-    } else if (globe === "politicalGlobe") {
-      imgSrc = `politicalmap${RESOLUTION}_optimized.jpg`;
-    } else if (globe === "tectonicGlobe") {
-      imgSrc = `tectonic${RESOLUTION}_optimized.jpg`;
+    switch (globe) {
+      case "simulationGlobe":
+      case "physicalGlobe":
+        imgSrc = `earthmap${RESOLUTION}_optimized.jpg`;
+        break;
+      case "politicalGlobe":
+        imgSrc = `politicalmap${RESOLUTION}_optimized.jpg`;
+        break;
+      case "tectonicGlobe":
+        imgSrc = `tectonic${RESOLUTION}_optimized.jpg`;
+        break;
     }
 
     Scene.loader.load(
       imgSrc,
       (texture) => {
-        // const texture = new THREE.CanvasTexture(imgBitmap);
-
         // Change Globe Lighting
         if (globe === "simulationGlobe" || globe === "physicalGlobe") {
           Scene.ambientLight.intensity = 0.1;
@@ -230,7 +228,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
         }
 
         // Remove or Add Simulation Clouds
-        globe === simulationGlobe
+        globe === "simulationGlobe"
           ? Scene.add(Scene.cloudObj)
           : Scene.remove(cloud);
 
@@ -284,7 +282,6 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     Scene.loader.load(
       url,
       (img) => {
-        // const coreTexture = new THREE.CanvasTexture(imgBitmap),
         const earthCore = new THREE.MeshBasicMaterial({
           map: img,
           side: THREE.BackSide,

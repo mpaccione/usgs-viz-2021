@@ -120,7 +120,7 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
             name={"Simulation"}
             checked={options.simulationGlobe}
             onClick={() => {
-              dispatch(setGlobe("simulationGlove"));
+              dispatch(setGlobe("simulationGlobe"));
             }}
             mobile={mobile}
           />
