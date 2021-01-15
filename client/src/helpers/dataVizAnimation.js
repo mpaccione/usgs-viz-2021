@@ -83,6 +83,17 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   Scene.controls.minDistance = 1000;
   Scene.controls.maxDistance = 2800;
 
+  Scene.lockOrbit = (boolean, axis) => {
+    console.log("lockOrbit")
+    if (axis === "Y") {
+      Scene.controls.minPolarAngle = boolean ? Math.PI / 2 : 0;
+      Scene.controls.maxPolarAngle = boolean ? Math.PI / 2 : Math.PI;
+    } else {
+      Scene.controls.minAzimuthAngle = boolean ? Math.PI : -Infinity;
+      Scene.controls.maxAzimuthAngle = boolean ? Math.PI : Infinity;
+    }
+  };
+
   // EFFECTS
   const bloom = new BloomEffect({
     blendFunction: BlendFunction.SCREEN,
@@ -248,7 +259,8 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   // rotation reset
   Scene.rotationReset = (feedIndex) => {
     Scene.worldObj.rotation.y = 0;
-    if (Scene.simulationGlobe === true) { // TODO: Check this logic 
+    if (Scene.simulationGlobe === true) {
+      // TODO: Check this logic
       Scene.cloudObj.rotation.y = 0;
     }
     Scene.getObjectByName(`data${feedIndex}`).rotation.y = 0;
@@ -468,7 +480,6 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
   // TODO: Ensure Props Passed Update
   Scene.animate = ({ autoRotation, selectedQuake }) => {
-    console.log("animate");
     if (Scene.loaded) {
       Scene.spotlight.position.set(
         Scene.camera.position.x,

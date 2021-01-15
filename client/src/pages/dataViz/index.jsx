@@ -34,6 +34,8 @@ const DataViz = () => {
       <Animation
         mobile={mobile}
         feedIndex={options.feedIndex}
+        clickXRotation={options.clickXRotation}
+        clickYRotation={options.clickYRotation}
         globes={{
           simulationGlobe: options.simulationGlobe,
           physicalGlobe: options.physicalGlobe,

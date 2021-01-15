@@ -96,18 +96,18 @@ const Options = ({ mobile, options, threeData, vizTextureRendered }) => {
           <hr></hr>
           <RotationOption
             name={"Click & Drag X Rotation"}
-            checked={!options.autoRotation}
+            checked={options.clickXRotation}
             onClick={() => {
-              dispatch(setClickXRotation(true));
+              dispatch(setClickXRotation(!options.clickXRotation));
             }}
             disabled={options.autoRotation}
           />
           <hr></hr>
           <RotationOption
             name={"Click & Drag Y Rotation"}
-            checked={!options.autoRotation}
+            checked={options.clickYRotation}
             onClick={() => {
-              dispatch(setClickYRotation(true));
+              dispatch(setClickYRotation(!options.clickYRotation));
             }}
             disabled={options.autoRotation}
           />

@@ -35,7 +35,12 @@ const optionSlice = createSlice({
       return state;
     },
     setAutoRotation: (state, action) => {
+      console.log({setAutoRotation: action.payload})
       state.autoRotation = action.payload;
+      if (!action.payload){
+        state.clickXRotation = true;
+        state.clickYRotation = true;
+      }
       return state;
     },
     setClickXRotation: (state, action) => {

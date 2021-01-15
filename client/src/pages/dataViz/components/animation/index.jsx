@@ -5,8 +5,10 @@ const { innerWidth, innerHeight } = window;
 const animationViz = vizAnimation(innerWidth, innerHeight);
 let prevFeedIndex = null;
 let prevGlobeType = null;
+let prevClickXRotation = null;
+let prevClickYRotation = null;
 
-const Viz = React.memo(({ globes, feedIndex }) => {
+const Viz = React.memo(({ globes, feedIndex, clickXRotation, clickYRotation }) => {
   const animationMountRef = useCallback((node) => {
     if (node !== null) {
       animationViz.mount = node;
@@ -39,13 +41,25 @@ const Viz = React.memo(({ globes, feedIndex }) => {
       if (globes[key]) {
         return key.toString(); // Return KeyName if Truthy
       }
-    });
-    console.log({newGlobeType})
-    if (prevGlobeType !== null) {
-      animationViz.changeGlobe(newGlobeType[0]);
+    })[0];
+    if (prevGlobeType !== null && prevGlobeType !== newGlobeType) {
+      animationViz.changeGlobe(newGlobeType);
     }
     prevGlobeType = newGlobeType;
   }, [globes]);
+
+  // Changing Rotation
+  useEffect(() => {
+    console.log("useEffect lockOrbit")
+    if (prevClickXRotation !== null && prevClickXRotation !== clickXRotation){
+      animationViz.lockOrbit(!clickXRotation, "X")
+    }
+    if (prevClickYRotation !== null && prevClickYRotation !== clickYRotation){
+      animationViz.lockOrbit(!clickYRotation, "Y")
+    }
+    prevClickXRotation = clickXRotation;
+    prevClickYRotation = clickYRotation;
+  }, [clickXRotation, clickYRotation])
 
   const resizeHandler = () => {
     const { innerWidth, innerHeight } = window;
