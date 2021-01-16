@@ -18,11 +18,11 @@ export const colorData = (percentage) => {
 
 // Projection Mapping
 export const longLatToSphere = (long, lat, radius) => {
-  const phi = (90 - lat) * (Math.PI / 180),
-    theta = (long + 180) * (Math.PI / 180),
-    x = -(radius * Math.sin(phi) * Math.cos(theta)),
-    z = radius * Math.sin(phi) * Math.sin(theta),
-    y = radius * Math.cos(phi);
+  const phi = (90 - lat) * (Math.PI / 180);
+  const theta = (long + 180) * (Math.PI / 180);
+  const x = -(radius * Math.sin(phi) * Math.cos(theta));
+  const z = radius * Math.sin(phi) * Math.sin(theta);
+  const y = radius * Math.cos(phi);
 
   return new THREE.Vector3(x, y, z);
 };
@@ -49,8 +49,8 @@ export const createThreeJSON = (usgsData, i) => {
     // Three Data Obj
     const quakeVector = longLatToSphere(coordinates[0], coordinates[1], 600);
     const { x, y, z } = quakeVector;
-    const rgb = colorData(magnitude);
-    const cubeHeight = magnitude > 0 ? magnitude ** 3 * 1.75 : 0;
+    const rgb = colorData(mag);
+    const cubeHeight = mag > 0 ? mag ** 3 * 1.75 : 0;
     const cubeGeom = new THREE.BoxBufferGeometry(3, 3, cubeHeight, 1, 1, 1);
     const cube = new THREE.Mesh(cubeGeom, cubeMat);
     //

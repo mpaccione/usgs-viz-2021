@@ -4,14 +4,11 @@ import * as path from "path";
 import { fileURLToPath } from 'url';
 import expressStaticGzipMiddleware from "express-static-gzip";
 import app from "./routes.mjs";
-import { dbConnTest } from "./helpers/db.mjs";
 import { cronDownload } from "./helpers/cron.mjs"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-dbConnTest();
 cronDownload();
-
 
 app.use(morgan("combined"));
 app.use(cors());

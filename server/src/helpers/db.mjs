@@ -1,44 +1,15 @@
-import mongodb from "mongodb";
-import dotenv from "dotenv";
-dotenv.config();
+import FlatDB from "flat-db";
 
-export const ObjectId = mongodb.ObjectId;
+FlatDB.configure({ dir: "./storage" });
 
-export const dbReq = (dbCb) => {
-  mongodb.MongoClient.connect(process.env.DB_URL, function (err, client) {
-    if (err) {
-      client.close();
-      res.status(500).end();
-      throw err;
-    } else {
-      const db = client.db(process.env.DB_NAME);
-      dbCb(db, client);
-    }
-  });
+export const createCollection = (collectionName, data) => {
+  const Collection = new FlatDB.Collection(collectionName)
+  const keys = Collection.add(data)
+  console.log(`${collectionName} stored as flat file`)
+  return Collection
 };
 
-export const getCollection = (db, client, collectionName, res) => {
-  db.collection(collectionName)
-    .find()
-    .toArray((error, result) => {
-      if (error) {
-        res.status(500).end();
-      } else {
-        client.close();
-        res.status(200).send(result);
-      }
-    });
-};
-
-export const dbConnTest = () => {
-  dbReq((db, client) => {
-    console.log("MongoDB connection successful");
-    const listDatabases = async () => {
-      const dbList = await db.admin().listDatabases();
-      console.log("Databases:");
-      dbList.databases.forEach((db) => console.log(` - ${db.name}`));
-    };
-    console.log(listDatabases());
-    client.close();
-  });
-};
+export const updateCollection = (collectionRef, data) => {
+  const update = collectionRef.update(data)
+  console.log(update)
+}
