@@ -7,9 +7,9 @@ export const ObjectId = mongodb.ObjectId;
 export const dbReq = (dbCb) => {
   mongodb.MongoClient.connect(process.env.DB_URL, function (err, client) {
     if (err) {
-      throw err;
       client.close();
       res.status(500).end();
+      throw err;
     } else {
       const db = client.db(process.env.DB_NAME);
       dbCb(db, client);
