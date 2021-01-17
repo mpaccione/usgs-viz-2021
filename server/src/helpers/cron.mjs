@@ -18,16 +18,7 @@ const urlPaths = [
   ["month", "all_month.geojson?minmagnitude=0.1"],
 ];
 
-const dbCollections = new Array(4);
-
-// Create Initial Collections
-urlPaths.forEach((path, index) => {
-  dbCollections[index] = createCollection(urlPaths[index][0], [{}]);
-});
-
-export const cronDownload = () => {
-  console.log("cronDownload");
-  //   cron.schedule("*/4 * * * *", () => {
+const downloadAndStore = (update = false) => {
   urlPaths.forEach(async (path, index) => {
     console.log(index);
     try {
@@ -37,12 +28,30 @@ export const cronDownload = () => {
           usgsReq.data.features,
           index
         );
-        writeCollection(dbCollections[index], { quakes, threeData })
-        //updateCollection(dbCollections[index], path[0], { quakes, threeData });
+        update
+          ? updateCollection(index, path[0],{ quakes, threeData })
+          : writeCollection(index, path[0], { quakes, threeData });
       }
     } catch (err) {
       console.log({ err });
     }
   });
-  //   });
+};
+
+export const cronDownload = () => {
+  console.log("cronDownload");
+  // Create Initial Collections
+  urlPaths.forEach((path, index) => {
+    createCollection(urlPaths[index][0], index, {
+      quakes: [],
+      threeData: {}
+    });
+  });
+  // Initial Download
+  downloadAndStore()
+
+  cron.schedule("*/4 * * * *", () => {
+    console.log("CRON")
+    downloadAndStore("update")
+  });
 };
