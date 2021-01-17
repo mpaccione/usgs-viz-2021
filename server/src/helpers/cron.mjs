@@ -1,11 +1,10 @@
 import axios from "axios";
 import cron from "node-cron";
-import { updateCollection } from "./db.mjs";
-import { createCollection } from "./db.mjs";
+import { createCollection, writeCollection, updateCollection } from "./db.mjs";
 import { createThreeJSON } from "./three.mjs";
 
 const axiosUSGS = axios.create({
-  baseURL: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/",
+  baseURL: "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/",
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -23,7 +22,7 @@ const dbCollections = new Array(4);
 
 // Create Initial Collections
 urlPaths.forEach((path, index) => {
-  dbCollections[index] = createCollection(urlPaths[index][0], [{data: "stuff"}]);
+  dbCollections[index] = createCollection(urlPaths[index][0], [{}]);
 });
 
 export const cronDownload = () => {
@@ -38,11 +37,11 @@ export const cronDownload = () => {
           usgsReq.data.features,
           index
         );
-        updateCollection(dbCollections[index], { quakes, threeData });
+        writeCollection(dbCollections[index], { quakes, threeData })
+        //updateCollection(dbCollections[index], path[0], { quakes, threeData });
       }
     } catch (err) {
       console.log({ err });
-      res.status(500).send(err);
     }
   });
   //   });
