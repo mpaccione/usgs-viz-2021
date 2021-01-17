@@ -26,13 +26,11 @@ export const createCollection = (collectionName, index, schema) => {
 
 export const writeCollection = (index, timespan, data) => {
   zlib.gzip(JSON.stringify(data), (err, result) => {
-    const base64 = result.toString("base64");
-    console.log({ base64 });
     if (err) {
       console.log({ err });
     } else {
       const keyName = dbCollections.gzip[index].add({
-        base64,
+        result
       });
       collectionKeys.gzip[index] = keyName;
       writeLogging(timespan, keyName, index, "gzip");
@@ -40,12 +38,11 @@ export const writeCollection = (index, timespan, data) => {
   });
 
   zlib.brotliCompress(JSON.stringify(data), (err, result) => {
-    const base64 = result.toString("base64");
     if (err) {
       console.log({ err });
     } else {
       const keyName = dbCollections.brotli[index].add({
-        base64
+        result
       });
       collectionKeys.brotli[index] = keyName;
       writeLogging(timespan, keyName, index, "brotli");
@@ -55,24 +52,22 @@ export const writeCollection = (index, timespan, data) => {
 
 export const updateCollection = (index, timespan, data) => {
   zlib.gzip(JSON.stringify(data), (err, result) => {
-    const base64 = result.toString("base64");
     if (err) {
       console.log({ err });
     } else {
       dbCollections.gzip[index].update(collectionKeys.gzip[index], {
-        base64,
+        result
       });
       writeLogging(timespan, "update", index, "gzip");
     }
   });
 
   zlib.brotliCompress(JSON.stringify(data), (err, result) => {
-    const base64 = result.toString("base64");
     if (err) {
       console.log({ err });
     } else {
       dbCollections.brotli[index].update(collectionKeys.brotli[index], {
-        base64,
+        result
       });
       writeLogging(timespan, "update", index, "brotli");
     }
@@ -80,10 +75,8 @@ export const updateCollection = (index, timespan, data) => {
 };
 
 export const readCollection = (index, encoding) => {
-  console.log({ encoding });
   const encodedRead = encoding.includes("br")
     ? dbCollections.brotli[index].all()
     : dbCollections.gzip[index].all();
-  console.log({ encodedRead });
-  return Buffer.from(encodedRead);
+  return encodedRead[0].result;
 };
