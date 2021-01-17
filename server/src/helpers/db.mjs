@@ -13,8 +13,10 @@ const writeLogging = (timespan, key, index, compressionType) => {
 };
 
 export const createCollection = (collectionName, index, schema) => {
-  const gzipCollection = new FlatDB.Collection(`${collectionName}_gz`, schema);
-  const brotliCollection = new FlatDB.Collection(`${collectionName}_br`, schema);
+  const gzipCollection = new FlatDB.Collection(`${collectionName}_gz`);
+  const brotliCollection = new FlatDB.Collection(
+    `${collectionName}_br`
+  );
   dbCollections.gzip[index] = gzipCollection; // Store DB Ref in Memory
   dbCollections.brotli[index] = brotliCollection; // Store DB Ref in Memory
 
@@ -23,25 +25,27 @@ export const createCollection = (collectionName, index, schema) => {
 };
 
 export const writeCollection = (index, timespan, data) => {
-  zlib.gzip(data.toString(), (err, result) => {
-    console.log({ buffer: result.toString('base64') });
+  zlib.gzip(JSON.stringify(data), (err, result) => {
+    const base64 = result.toString("base64");
+    console.log({ base64 });
     if (err) {
       console.log({ err });
     } else {
       const keyName = dbCollections.gzip[index].add({
-        buffer: result.toString("base64"),
+        base64,
       });
       collectionKeys.gzip[index] = keyName;
       writeLogging(timespan, keyName, index, "gzip");
     }
   });
 
-  zlib.brotliCompress(data.toString(), (err, result) => {
+  zlib.brotliCompress(JSON.stringify(data), (err, result) => {
+    const base64 = result.toString("base64");
     if (err) {
       console.log({ err });
     } else {
       const keyName = dbCollections.brotli[index].add({
-        buffer: result.toString("base64"),
+        base64
       });
       collectionKeys.brotli[index] = keyName;
       writeLogging(timespan, keyName, index, "brotli");
@@ -50,29 +54,36 @@ export const writeCollection = (index, timespan, data) => {
 };
 
 export const updateCollection = (index, timespan, data) => {
-  zlib.gzip(data.toString(), (err, result) => {
+  zlib.gzip(JSON.stringify(data), (err, result) => {
+    const base64 = result.toString("base64");
     if (err) {
       console.log({ err });
     } else {
       dbCollections.gzip[index].update(collectionKeys.gzip[index], {
-        buffer: result.toString("base64"),
+        base64,
       });
       writeLogging(timespan, "update", index, "gzip");
     }
   });
 
-  zlib.brotliCompress(data.toString(), (err, result) => {
+  zlib.brotliCompress(JSON.stringify(data), (err, result) => {
+    const base64 = result.toString("base64");
     if (err) {
       console.log({ err });
     } else {
       dbCollections.brotli[index].update(collectionKeys.brotli[index], {
-        buffer: result.toString("base64"),
+        base64,
       });
       writeLogging(timespan, "update", index, "brotli");
     }
   });
 };
 
-export const readCollection = (index) => {
-  return dbCollections[index].all();
+export const readCollection = (index, encoding) => {
+  console.log({ encoding });
+  const encodedRead = encoding.includes("br")
+    ? dbCollections.brotli[index].all()
+    : dbCollections.gzip[index].all();
+  console.log({ encodedRead });
+  return Buffer.from(encodedRead);
 };

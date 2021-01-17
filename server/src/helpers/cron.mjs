@@ -43,8 +43,7 @@ export const cronDownload = () => {
   // Create Initial Collections
   urlPaths.forEach((path, index) => {
     createCollection(urlPaths[index][0], index, {
-      quakes: [],
-      threeData: {}
+      // base64: ""
     });
   });
   // Initial Download
