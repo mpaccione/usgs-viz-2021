@@ -1,5 +1,5 @@
 import express from "express";
-import { getQuakeData, testGetQuakeData } from "./controllers/QuakeController.mjs"
+import { getQuakeData, testGetQuakeData, testGetCompressedQuakeData } from "./controllers/QuakeController.mjs"
 
 const app = express();
 
@@ -28,7 +28,9 @@ app.use(express.urlencoded());
 
 // QUAKE DATA
 app.post("/api/quakeData", getQuakeData);
+// TESTING
 app.get("/api/quakeData", testGetQuakeData);
+app.get("/api/compressedQuakeData", testGetCompressedQuakeData);
 
 
 export default app;
