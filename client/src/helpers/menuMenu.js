@@ -159,8 +159,8 @@ export const putCacheData = (res, indexedDB, dispatch) => {
     };
     // SET REDUX
     batch(() => {
-      dispatch(setQuakes(res[0]));
-      dispatch(setThreeData(res[1]));
+      dispatch(setQuakes(res.quakes));
+      dispatch(setThreeData(res.threeData));
       // TODO: Create recursive function to get maximum feedIndex
       dispatch(setVizInitSuccess(true))
     });

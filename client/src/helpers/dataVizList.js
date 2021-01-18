@@ -24,16 +24,20 @@ export const timeClass = (quakes, feedIndex, index) => {
 };
 
 export const formattedQuakeCount = (quakes, feedIndex) => {
-  const count = quakes[feedIndex].length;
-  let countArr = count.toString().split("");
+  if (quakes) {
+    const count = quakes[feedIndex].length;
+    let countArr = count.toString().split("");
 
-  if (countArr.length >= 4) {
-    // Reverse Number and Add Comma at 3rd index
-    countArr.reverse();
-    countArr.splice(3, 0, ",");
-    countArr.reverse();
-    return countArr;
+    if (countArr.length >= 4) {
+      // Reverse Number and Add Comma at 3rd index
+      countArr.reverse();
+      countArr.splice(3, 0, ",");
+      countArr.reverse();
+      return countArr;
+    } else {
+      return count;
+    }
   } else {
-    return count;
+    return 0;
   }
 };
