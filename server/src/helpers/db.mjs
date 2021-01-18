@@ -5,12 +5,14 @@ FlatDB.configure({ dir: "./storage" });
 
 const dbCollections = { gzip: new Array(4), brotli: new Array(4) };
 const collectionKeys = { gzip: new Array(4), brotli: new Array(4) };
+export const bufferLengths = { gzip: new Array(4), brotli: new Array(4) };
 
 const writeLogging = (timespan, key, index, compressionType) => {
   console.log(`${timespan}: ${key}`);
   console.log(dbCollections[compressionType][index]);
   console.log("Size: " + dbCollections[compressionType][index].count());
 };
+
 
 export const createCollection = (collectionName, index, schema) => {
   const gzipCollection = new FlatDB.Collection(`${collectionName}_gz`);
@@ -33,6 +35,7 @@ export const writeCollection = (index, timespan, data) => {
         result
       });
       collectionKeys.gzip[index] = keyName;
+      bufferLengths.gzip[index] = result.length
       writeLogging(timespan, keyName, index, "gzip");
     }
   });
@@ -45,6 +48,7 @@ export const writeCollection = (index, timespan, data) => {
         result
       });
       collectionKeys.brotli[index] = keyName;
+      bufferLengths.brotli[index] = result.length
       writeLogging(timespan, keyName, index, "brotli");
     }
   });

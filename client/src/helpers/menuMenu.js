@@ -60,7 +60,7 @@ export const createIndexedDB = (indexedDB) => {
 
 export const getByteLengths = async (setByteLength, setDownloadTimes) => {
   try {
-    const byteLengthRes = await get("/bufferLength");
+    const byteLengthRes = await get("/api/bufferLength");
     console.log({byteLengthRes})
     if (byteLengthRes && byteLengthRes.data) {
       let downloadTimeArr = []

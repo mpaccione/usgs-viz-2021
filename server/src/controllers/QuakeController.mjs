@@ -1,11 +1,18 @@
 import zlib from "zlib";
 import * as Decoder from "string_decoder";
-import { readCollection } from "../helpers/db.mjs";
+import { readCollection, bufferLengths } from "../helpers/db.mjs";
 
 const decoder = new Decoder.StringDecoder("utf-8");
 
-// Quakes
+// PROD
 ///////////
+export const getBufferLengths = (req, res) => {
+  const encoding = req.headers["accept-encoding"];
+  encoding.includes("br")
+    ? res.send(bufferLengths.brotli)
+    : res.send(bufferLengths.gzip);
+};
+
 export const getQuakeData = (req, res) => {
   const encoding = req.headers["accept-encoding"];
 
@@ -21,15 +28,17 @@ export const getQuakeData = (req, res) => {
           "Content-Type": "application/json",
           "Content-Encoding": "gzip",
           "Content-Length": data.length,
-        })
-    
-    res.end(data)
+        });
+
+    res.end(data);
   } catch (err) {
     console.log({ err });
     res.status(500).send(err);
   }
 };
 
+// TESTING
+////////////
 export const testGetQuakeData = (req, res) => {
   const encoding = req.headers["accept-encoding"];
 
@@ -63,9 +72,9 @@ export const testGetCompressedQuakeData = (req, res) => {
           "Content-Type": "application/json",
           "Content-Encoding": "gzip",
           "Content-Length": data.length,
-        })
-    
-    res.end(data)
+        });
+
+    res.end(data);
   } catch (err) {
     console.log({ err });
     res.status(500).send(err);
