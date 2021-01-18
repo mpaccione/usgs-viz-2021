@@ -271,7 +271,9 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
       // TODO: Check this logic
       Scene.cloudObj.rotation.y = 0;
     }
-    Scene.getObjectByName(`data${feedIndex}`).rotation.y = 0;
+    if (Scene.getObjectByName(`data${feedIndex}`)) {
+      Scene.getObjectByName(`data${feedIndex}`).rotation.y = 0;
+    }
   };
 
   // add a simple light

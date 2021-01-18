@@ -15,7 +15,6 @@ export const getBufferLengths = (req, res) => {
 
 export const getQuakeData = (req, res) => {
   const encoding = req.headers["accept-encoding"];
-  console.log(req)
   const { index } = req.body
 
   try {
