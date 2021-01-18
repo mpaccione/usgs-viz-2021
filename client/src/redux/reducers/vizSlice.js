@@ -42,6 +42,12 @@ const vizSlice = createSlice({
       state.threeData = action.payload;
       return state;
     },
+    setThreeDataByIndex: (state, action) => {
+      const { index, value } = action.payload;
+      const newThreeDataObj = { ...state.threeData, [index]: value };
+      state.threeData = newThreeDataObj;
+      return state;
+    },
     setVizTextureRendered: (state, action) => {
       state.vizTextureRendered = action.payload;
       return state;
@@ -58,6 +64,7 @@ export const {
   setQuakesByIndex,
   setSelectedQuakeIndex,
   setThreeData,
+  setThreeDataByIndex,
   setVizTextureRendered,
   setSearchWord
 } = vizSlice.actions;

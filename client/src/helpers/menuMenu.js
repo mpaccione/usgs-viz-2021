@@ -6,8 +6,7 @@ import {
   setVizLoad,
   setVizInitSuccess
 } from "@/redux/reducers/menuSlice.js";
-import { setThreeData, setQuakes } from "@/redux/reducers/vizSlice.js";
-//import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
+import { setThreeDataByIndex, setQuakesByIndex } from "@/redux/reducers/vizSlice.js";
 
 export const dropdownOptions = [
   {
@@ -60,7 +59,7 @@ export const createIndexedDB = (indexedDB) => {
 
 export const getByteLengths = async (setByteLength, setDownloadTimes) => {
   try {
-    const byteLengthRes = await get("/api/bufferLength");
+    const byteLengthRes = await get("/bufferLength");
     console.log({byteLengthRes})
     if (byteLengthRes && byteLengthRes.data) {
       let downloadTimeArr = []
@@ -124,7 +123,7 @@ export const getCacheData = (indexedDB, dispatch) => {
   };
 };
 
-export const putCacheData = (res, indexedDB, dispatch) => {
+export const putCacheData = (res, index, indexedDB, dispatch) => {
   const dbReq = indexedDB.open("JSON");
 
   dbReq.onsuccess = (e) => {
@@ -159,8 +158,8 @@ export const putCacheData = (res, indexedDB, dispatch) => {
     };
     // SET REDUX
     batch(() => {
-      dispatch(setQuakes(res[0]));
-      dispatch(setThreeData(res[1]));
+      dispatch(setQuakesByIndex({index, value: res.quakes}));
+      dispatch(setThreeDataByIndex({index, value: res.threeData}));
       // TODO: Create recursive function to get maximum feedIndex
       dispatch(setVizInitSuccess(true))
     });
@@ -175,7 +174,7 @@ export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
     dispatch(setPreloaderText("Loading Big Data"));
   });
 
-  xhrReq.open("GET", `${baseURL}/quakeData/${selectValue}`, true);
+  xhrReq.open("POST", `${baseURL}/quakeData`, true);
 
   xhrReq.onprogress = (e) => {
     console.log(e.loaded)
@@ -188,7 +187,7 @@ export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
       const res = JSON.parse(this.responseText);
       console.log({res})
       dispatch(setProgressComplete(100))
-      putCacheData(res, indexedDB, dispatch); // Updates Redux after storing to IndexedDB
+      putCacheData(res, selectValue, indexedDB, dispatch); // Updates Redux after storing to IndexedDB
     }
   };
 
@@ -197,5 +196,6 @@ export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
     getCacheData();
   };
 
-  xhrReq.send();
+  xhrReq.setRequestHeader("Content-Type", 'application/json');
+  xhrReq.send(JSON.stringify({index: selectValue}));
 };

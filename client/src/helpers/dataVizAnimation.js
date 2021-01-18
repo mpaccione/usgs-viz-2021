@@ -121,7 +121,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     Scene.renderer.setSize(newWidth, newHeight);
   };
 
-  Scene.handleZoom = (e) => { 
+  Scene.handleZoom = (e) => {
     Scene.controls.enableZoom = e.type === "mouseenter" ? false : true;
   };
 
@@ -176,23 +176,25 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     const { threeData } = STATE.viz;
     const { feedIndex } = STATE.option;
 
-    Scene.dataArray[0] =
-      threeData[0] !== null ? objLoader.parse(threeData[0]) : null;
-    Scene.dataArray[1] =
-      threeData[1] !== null ? objLoader.parse(threeData[1]) : null;
-    Scene.dataArray[2] =
-      threeData[2] !== null ? objLoader.parse(threeData[2]) : null;
-    Scene.dataArray[3] =
-      threeData[3] !== null ? objLoader.parse(threeData[3]) : null;
+    if (threeData) {
+      Scene.dataArray[0] =
+        threeData[0] !== null ? objLoader.parse(threeData[0]) : null;
+      Scene.dataArray[1] =
+        threeData[1] !== null ? objLoader.parse(threeData[1]) : null;
+      Scene.dataArray[2] =
+        threeData[2] !== null ? objLoader.parse(threeData[2]) : null;
+      Scene.dataArray[3] =
+        threeData[3] !== null ? objLoader.parse(threeData[3]) : null;
 
-    Scene.sceneLoader.data = Scene.dataArray[feedIndex];
-    Scene.getObjectByName("world").add(Scene.dataArray[feedIndex]);
+      Scene.sceneLoader.data = Scene.dataArray[feedIndex];
+      Scene.getObjectByName("world").add(Scene.dataArray[feedIndex]);
+    }
   };
 
   // remove data when switching earthquake timescales
   Scene.changeTimeFrameData = (prevFeedIndex, newFeedIndex) => {
     store.dispatch(setAutoRotation(false));
-    Scene.setAutoRotation(false)
+    Scene.setAutoRotation(false);
     Scene.stop();
     const selectedQuake = Scene.getObjectByName("selectedQuake");
     const world = Scene.getObjectByName("world");
@@ -211,7 +213,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
   // change globe type
   Scene.changeGlobe = (globe) => {
     store.dispatch(setAutoRotation(false));
-    Scene.setAutoRotation(false)
+    Scene.setAutoRotation(false);
     Scene.stop();
     // change texture code here
     const cloud = Scene.getObjectByName("cloud");
@@ -269,7 +271,9 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
       // TODO: Check this logic
       Scene.cloudObj.rotation.y = 0;
     }
-    Scene.getObjectByName(`data${feedIndex}`).rotation.y = 0;
+    if (Scene.getObjectByName(`data${feedIndex}`)) {
+      Scene.getObjectByName(`data${feedIndex}`).rotation.y = 0;
+    }
   };
 
   // add a simple light
@@ -449,34 +453,36 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
 
   // Zoom to Selected Quake
   Scene.cameraToQuake = (selectedQuake) => {
-    // console.log("cameraToQuake");
-    store.dispatch(setAutoRotation(false));
-    Scene.setAutoRotation(false);
-    const altitude = 1400;
-    const coeff = 1 + altitude / 600;
-    const { magnitude, coordinates } = selectedQuake;
-    const quakeVector = longLatToSphere(coordinates[0], coordinates[1], 600);
-    //
-    const { x, y, z } = quakeVector;
-    const quakeVectorX = x * -coeff;
-    const quakeVectorY = y * coeff;
-    const quakeVectorZ = z * -coeff;
-    //
-    const zoomToQuake = new TWEEN.Tween(
-      Scene.getObjectByName("camera").position
-    )
-      .to({ x: -quakeVectorX, y: quakeVectorY, z: -quakeVectorZ }, 2000)
-      .onUpdate(() => {
-        Scene.camera.lookAt(Scene.getObjectByName("world").position);
-      });
-    const worldUnrotate = new TWEEN.Tween(Scene.worldObj.rotation).to(
-      { x: 0, y: 0, z: 0 },
-      0
-    );
+    if (selectedQuake) {
+      // console.log("cameraToQuake");
+      store.dispatch(setAutoRotation(false));
+      Scene.setAutoRotation(false);
+      const altitude = 1400;
+      const coeff = 1 + altitude / 600;
+      const { magnitude, coordinates } = selectedQuake;
+      const quakeVector = longLatToSphere(coordinates[0], coordinates[1], 600);
+      //
+      const { x, y, z } = quakeVector;
+      const quakeVectorX = x * -coeff;
+      const quakeVectorY = y * coeff;
+      const quakeVectorZ = z * -coeff;
+      //
+      const zoomToQuake = new TWEEN.Tween(
+        Scene.getObjectByName("camera").position
+      )
+        .to({ x: -quakeVectorX, y: quakeVectorY, z: -quakeVectorZ }, 2000)
+        .onUpdate(() => {
+          Scene.camera.lookAt(Scene.getObjectByName("world").position);
+        });
+      const worldUnrotate = new TWEEN.Tween(Scene.worldObj.rotation).to(
+        { x: 0, y: 0, z: 0 },
+        0
+      );
 
-    Scene.addSelectedQuake(magnitude, x, y, z);
-    worldUnrotate.start();
-    zoomToQuake.start();
+      Scene.addSelectedQuake(magnitude, x, y, z);
+      worldUnrotate.start();
+      zoomToQuake.start();
+    }
   };
 
   Scene.addSelectedQuake = (mag, vectorX, vectorY, vectorZ) => {

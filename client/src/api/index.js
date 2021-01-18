@@ -7,8 +7,8 @@ import {
 
 export const baseURL =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
-    ? "http://localhost:8081"
-    : "https://quakeviz.app";
+    ? "http://localhost:8081/api"
+    : "https://quakeviz.app/api";
 
 // export const baseURL = "https://quakeviz.app";
 

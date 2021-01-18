@@ -24,7 +24,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.json());
-app.use(express.urlencoded());
+// app.use(express.urlencoded());
 
 // QUAKE DATA
 app.get("/api/bufferLength", getBufferLengths);

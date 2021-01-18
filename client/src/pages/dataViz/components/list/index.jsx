@@ -68,39 +68,45 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
           </>
         )}
       </div>
-      <Table
-        id="quakeResults"
-        width={mobile ? window.innerWidth : window.innerWidth * 0.2}
-        height={window.innerHeight - 80}
-        headerHeight={20}
-        rowHeight={40}
-        rowClassName={({ index }) => {
-          return timeClass(quakes, feedIndex, index);
-        }}
-        rowCount={filteredData ? filteredData.length : quakes[feedIndex].length}
-        rowGetter={({ index }) =>
-          filteredData ? filteredData[index] : quakes[feedIndex][index]
-        }
-        onRowClick={({ index }) => {
-          dispatch(setSelectedQuakeIndex(index));
-          setShowMobileMenu(false);
-        }}
-      >
-        <Column dataKey="index" label="" width={15} />
-        <Column
-          width={mobile ? window.innerWidth - 60 : window.innerWidth * 0.2 - 60}
-          dataKey="location"
-          label="Location"
-        />
-        <Column
-          width={45}
-          dataKey="magnitude"
-          label="Mag."
-          cellDataGetter={({ rowData, dataKey }) => {
-            return rowData[dataKey].toFixed(2);
+      {quakes && (
+        <Table
+          id="quakeResults"
+          width={mobile ? window.innerWidth : window.innerWidth * 0.2}
+          height={window.innerHeight - 80}
+          headerHeight={20}
+          rowHeight={40}
+          rowClassName={({ index }) => {
+            return timeClass(quakes, feedIndex, index);
           }}
-        />
-      </Table>
+          rowCount={
+            filteredData ? filteredData.length : quakes[feedIndex].length
+          }
+          rowGetter={({ index }) =>
+            filteredData ? filteredData[index] : quakes[feedIndex][index]
+          }
+          onRowClick={({ index }) => {
+            dispatch(setSelectedQuakeIndex(index));
+            setShowMobileMenu(false);
+          }}
+        >
+          <Column dataKey="index" label="" width={15} />
+          <Column
+            width={
+              mobile ? window.innerWidth - 60 : window.innerWidth * 0.2 - 60
+            }
+            dataKey="location"
+            label="Location"
+          />
+          <Column
+            width={45}
+            dataKey="magnitude"
+            label="Mag."
+            cellDataGetter={({ rowData, dataKey }) => {
+              return rowData[dataKey].toFixed(2);
+            }}
+          />
+        </Table>
+      )}
     </div>
   );
 };

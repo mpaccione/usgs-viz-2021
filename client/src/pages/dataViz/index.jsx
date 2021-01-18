@@ -44,7 +44,9 @@ const DataViz = () => {
           tectonicGlobe: options.tectonicGlobe,
         }}
         selectedQuake={
-          viz.quakes[options.feedIndex][viz.selectedQuakeIndex]
+          viz.quakes !== undefined
+            ? viz.quakes[options.feedIndex][viz.selectedQuakeIndex]
+            : false
         }
       />
       <Options

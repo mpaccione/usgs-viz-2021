@@ -15,9 +15,10 @@ export const getBufferLengths = (req, res) => {
 
 export const getQuakeData = (req, res) => {
   const encoding = req.headers["accept-encoding"];
+  const { index } = req.body
 
   try {
-    const data = readCollection(0, encoding);
+    const data = readCollection(index, encoding);
     encoding.includes("br")
       ? res.writeHead(200, {
           "Content-Type": "application/json",

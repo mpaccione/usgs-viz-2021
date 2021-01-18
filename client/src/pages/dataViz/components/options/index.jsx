@@ -31,6 +31,7 @@ const Options = React.memo(({ mobile, options, threeData, vizTextureRendered }) 
             <TimeOption
               name={"Past Hour"}
               mobileName={"1H"}
+              index={0}
               opacity={isDataAvailable[0]}
               disabled={threeData[0] === null ? true : false}
               checked={options.feedIndex === 0 ? true : false}
@@ -46,6 +47,7 @@ const Options = React.memo(({ mobile, options, threeData, vizTextureRendered }) 
             <TimeOption
               name={"Past 24 Hours"}
               mobileName={"24H"}
+              index={1}
               opacity={isDataAvailable[1]}
               disabled={threeData[1] === null ? true : false}
               checked={options.feedIndex === 1 ? true : false}
@@ -61,6 +63,7 @@ const Options = React.memo(({ mobile, options, threeData, vizTextureRendered }) 
             <TimeOption
               name={"Past 7 Days"}
               mobileName={"7D"}
+              index={2}
               opacity={isDataAvailable[2]}
               disabled={threeData[2] === null ? true : false}
               checked={options.feedIndex === 2 ? true : false}
@@ -76,6 +79,7 @@ const Options = React.memo(({ mobile, options, threeData, vizTextureRendered }) 
             <TimeOption
               name={"Past 30 Days"}
               mobileName={"30D"}
+              index={3}
               opacity={isDataAvailable[3]}
               disabled={threeData[3] === null ? true : false}
               checked={options.feedIndex === 3 ? true : false}
