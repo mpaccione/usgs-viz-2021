@@ -78,5 +78,5 @@ export const readCollection = (index, encoding) => {
   const encodedRead = encoding.includes("br")
     ? dbCollections.brotli[index].all()
     : dbCollections.gzip[index].all();
-  return encodedRead[0].result;
+  return Buffer.from(encodedRead[0].result);
 };

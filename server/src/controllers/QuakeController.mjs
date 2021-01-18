@@ -1,7 +1,8 @@
-import * as Decoder from "string_decoder"
+import zlib from "zlib";
+import * as Decoder from "string_decoder";
 import { readCollection } from "../helpers/db.mjs";
 
-const decoder = new Decoder.StringDecoder('utf-8')
+const decoder = new Decoder.StringDecoder("utf-8");
 
 // Quakes
 ///////////
@@ -23,14 +24,13 @@ export const testGetQuakeData = (req, res) => {
 
   try {
     const data = readCollection(0, encoding);
-    console.log(data)
-    const json = decoder.write(Buffer.from(data));
-    console.log(json)
-    // res.set({
-    //   'Content-Type': 'application/json',
-    //   'Content-Encoding': encoding.includes('br') ? 'br' : "gzip",
-    // })
-    res.send(json)
+    encoding.includes("br")
+      ? zlib.brotliDecompress(data, (err, result) => {
+          err ? res.status(500).send(err) : res.send(decoder.write(result));
+        })
+      : zlib.unzip(data, (err, result) => {
+          err ? res.status(500).send(err) : res.send(decoder.write(result));
+        });
   } catch (err) {
     console.log({ err });
     res.status(500).send(err);
