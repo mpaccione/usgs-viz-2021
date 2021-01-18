@@ -60,7 +60,7 @@ export const createIndexedDB = (indexedDB) => {
 
 export const getByteLengths = async (setByteLength, setDownloadTimes) => {
   try {
-    const byteLengthRes = await get("/api/bufferLength");
+    const byteLengthRes = await get("/bufferLength");
     console.log({byteLengthRes})
     if (byteLengthRes && byteLengthRes.data) {
       let downloadTimeArr = []
@@ -175,7 +175,7 @@ export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
     dispatch(setPreloaderText("Loading Big Data"));
   });
 
-  xhrReq.open("GET", `${baseURL}/quakeData/${selectValue}`, true);
+  xhrReq.open("POST", `${baseURL}/quakeData`, true);
 
   xhrReq.onprogress = (e) => {
     console.log(e.loaded)
@@ -197,5 +197,6 @@ export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
     getCacheData();
   };
 
-  xhrReq.send();
+  xhrReq.setRequestHeader("Content-Type", 'application/json');
+  xhrReq.send(JSON.stringify({index: selectValue}));
 };
