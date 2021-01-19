@@ -48,6 +48,7 @@ const DataViz = () => {
             ? viz.quakes[options.feedIndex][viz.selectedQuakeIndex]
             : false
         }
+        vizNeedsUpdate={viz.vizNeedsUpdate}
       />
       <Options
         mobile={mobile}

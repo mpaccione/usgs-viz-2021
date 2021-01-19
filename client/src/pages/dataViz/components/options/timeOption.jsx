@@ -44,14 +44,21 @@ const TimeOption = ({
                 onClick={async () => {
                   console.log("download");
                   // try {
-                    const res = await post("/quakeData", { index });
-                    console.log(res)
-                    if (res && res.data) {
-                      batch(() => {
-                        dispatch(setQuakesByIndex({index, value: res.data.quakes}));
-                        dispatch(setThreeDataByIndex({index, value: res.data.threeData}));
-                      });
-                    }
+                  const res = await post("/quakeData", { index });
+                  console.log(res);
+                  if (res && res.data) {
+                    batch(() => {
+                      dispatch(
+                        setQuakesByIndex({ index, value: res.data.quakes })
+                      );
+                      dispatch(
+                        setThreeDataByIndex({
+                          index,
+                          value: res.data.threeData,
+                        })
+                      );
+                    });
+                  }
                   // } catch (err) {
                   //   dispatchError(err);
                   // }

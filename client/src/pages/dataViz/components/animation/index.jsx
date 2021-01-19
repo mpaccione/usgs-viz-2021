@@ -28,7 +28,7 @@ const Viz = React.memo(
     clickXRotation,
     clickYRotation,
     autoRotation,
-    selectedQuake,
+    selectedQuake
   }) => {
     // Mount
     const animationMountRef = useCallback((node) => {
@@ -51,6 +51,7 @@ const Viz = React.memo(
     // Changing Timeframe
     useEffect(() => {
       if (prevFeedIndex !== null) {
+        animationViz.addData();
         animationViz.changeTimeFrameData(prevFeedIndex, feedIndex);
       }
       prevFeedIndex = feedIndex;

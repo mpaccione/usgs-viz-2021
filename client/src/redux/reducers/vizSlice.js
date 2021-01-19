@@ -66,6 +66,6 @@ export const {
   setThreeData,
   setThreeDataByIndex,
   setVizTextureRendered,
-  setSearchWord
+  setSearchWord,
 } = vizSlice.actions;
 export default vizSlice.reducer;
