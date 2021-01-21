@@ -6,7 +6,7 @@ import {
   setQuakesByIndex,
   setThreeDataByIndex,
 } from "@/redux/reducers/vizSlice";
-import { putCacheData } from "@/helpers/menuMenu";
+import { getCacheData, putCacheData } from "@/helpers/menuMenu";
 
 const indexedDB =
   window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
@@ -49,7 +49,7 @@ const TimeOption = ({
                     const res = await post("/quakeData", { index });
                     console.log(res);
                     if (res && res.data) {
-                      putCacheData(res.data, index, indexedDB, dispatch);
+                      putCacheData(res.data, index, indexedDB, dispatch, false);
                       batch(() => {
                         dispatch(
                           setQuakesByIndex({ index, value: res.data.quakes })
@@ -64,6 +64,7 @@ const TimeOption = ({
                     }
                   } catch (err) {
                     dispatchError("Network Error, checking cache for data...");
+                    getCacheData(indexedDB, dispatch, index)
                   }
                 }}
               />
