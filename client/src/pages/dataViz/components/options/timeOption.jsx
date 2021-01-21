@@ -45,26 +45,26 @@ const TimeOption = ({
                 name="arrow alternate circle down outline"
                 onClick={async () => {
                   console.log("download");
-                  // try {
-                  const res = await post("/quakeData", { index });
-                  console.log(res);
-                  if (res && res.data) {
-                    putCacheData(res.data, index, indexedDB, dispatch)
-                    batch(() => {
-                      dispatch(
-                        setQuakesByIndex({ index, value: res.data.quakes })
-                      );
-                      dispatch(
-                        setThreeDataByIndex({
-                          index,
-                          value: res.data.threeData,
-                        })
-                      );
-                    });
+                  try {
+                    const res = await post("/quakeData", { index });
+                    console.log(res);
+                    if (res && res.data) {
+                      putCacheData(res.data, index, indexedDB, dispatch);
+                      batch(() => {
+                        dispatch(
+                          setQuakesByIndex({ index, value: res.data.quakes })
+                        );
+                        dispatch(
+                          setThreeDataByIndex({
+                            index,
+                            value: res.data.threeData,
+                          })
+                        );
+                      });
+                    }
+                  } catch (err) {
+                    dispatchError("Network Error, checking cache for data...");
                   }
-                  // } catch (err) {
-                  //   dispatchError(err);
-                  // }
                 }}
               />
             ) : (

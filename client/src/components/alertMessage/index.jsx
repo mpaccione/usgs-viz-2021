@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Message } from "semantic-ui-react";
-import "./styles.scss";
+import "./index.scss";
 
 const AlertMessage = () => {
   const errorMessage = useSelector((state) => state.error.errorMessage);
