@@ -133,7 +133,7 @@ export const putCacheData = (res, index, indexedDB, dispatch) => {
     // GEO
     const transaction1 = db.transaction(["geo"], "readwrite");
     const store1 = transaction1.objectStore("geo");
-    const storeReq1 = store1.put(res[0], 0);
+    const storeReq1 = store1.put(res.quakes, index);
 
     storeReq1.onsuccess = function (e) {
       console.log("storeReq1.onsuccess");
@@ -146,7 +146,7 @@ export const putCacheData = (res, index, indexedDB, dispatch) => {
     // THREE
     const transaction2 = db.transaction(["three"], "readwrite");
     const store2 = transaction2.objectStore("three");
-    const storeReq2 = store2.put(res[1], 0);
+    const storeReq2 = store2.put(res.threeData, index);
 
     storeReq2.onsuccess = function (e) {
       console.log("storeReq2.onsuccess");

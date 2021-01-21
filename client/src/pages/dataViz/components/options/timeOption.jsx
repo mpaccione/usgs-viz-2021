@@ -6,8 +6,10 @@ import {
   setQuakesByIndex,
   setThreeDataByIndex,
 } from "@/redux/reducers/vizSlice";
+import { putCacheData } from "@/helpers/menuMenu";
 
-// TODO: REFACTOR BETTER FOR MOBILE
+const indexedDB =
+  window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
 
 const TimeOption = ({
   name,
@@ -47,6 +49,7 @@ const TimeOption = ({
                   const res = await post("/quakeData", { index });
                   console.log(res);
                   if (res && res.data) {
+                    putCacheData(res.data, index, indexedDB, dispatch)
                     batch(() => {
                       dispatch(
                         setQuakesByIndex({ index, value: res.data.quakes })
