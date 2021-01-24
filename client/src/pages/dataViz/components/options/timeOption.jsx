@@ -6,8 +6,10 @@ import {
   setQuakesByIndex,
   setThreeDataByIndex,
 } from "@/redux/reducers/vizSlice";
+import { getCacheData, putCacheData } from "@/helpers/menuMenu";
 
-// TODO: REFACTOR BETTER FOR MOBILE
+const indexedDB =
+  window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
 
 const TimeOption = ({
   name,
@@ -43,18 +45,27 @@ const TimeOption = ({
                 name="arrow alternate circle down outline"
                 onClick={async () => {
                   console.log("download");
-                  // try {
+                  try {
                     const res = await post("/quakeData", { index });
-                    console.log(res)
+                    console.log(res);
                     if (res && res.data) {
+                      putCacheData(res.data, index, indexedDB, dispatch, false);
                       batch(() => {
-                        dispatch(setQuakesByIndex({index, value: res.data.quakes}));
-                        dispatch(setThreeDataByIndex({index, value: res.data.threeData}));
+                        dispatch(
+                          setQuakesByIndex({ index, value: res.data.quakes })
+                        );
+                        dispatch(
+                          setThreeDataByIndex({
+                            index,
+                            value: res.data.threeData,
+                          })
+                        );
                       });
                     }
-                  // } catch (err) {
-                  //   dispatchError(err);
-                  // }
+                  } catch (err) {
+                    dispatchError("Network Error, checking cache for data...");
+                    getCacheData(indexedDB, dispatch, index)
+                  }
                 }}
               />
             ) : (

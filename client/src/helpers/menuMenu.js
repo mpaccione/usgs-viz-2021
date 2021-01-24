@@ -4,9 +4,12 @@ import {
   setPreloaderText,
   setProgressComplete,
   setVizLoad,
-  setVizInitSuccess
+  setVizInitSuccess,
 } from "@/redux/reducers/menuSlice.js";
-import { setThreeDataByIndex, setQuakesByIndex } from "@/redux/reducers/vizSlice.js";
+import {
+  setThreeDataByIndex,
+  setQuakesByIndex,
+} from "@/redux/reducers/vizSlice.js";
 
 export const dropdownOptions = [
   {
@@ -60,9 +63,9 @@ export const createIndexedDB = (indexedDB) => {
 export const getByteLengths = async (setByteLength, setDownloadTimes) => {
   try {
     const byteLengthRes = await get("/bufferLength");
-    console.log({byteLengthRes})
+    console.log({ byteLengthRes });
     if (byteLengthRes && byteLengthRes.data) {
-      let downloadTimeArr = []
+      let downloadTimeArr = [];
       // DOWNLOAD TIMES
       byteLengthRes.data.forEach((datum) => {
         downloadTimeArr.push(calcDownloadTimes(datum));
@@ -70,16 +73,16 @@ export const getByteLengths = async (setByteLength, setDownloadTimes) => {
       // INDEXEDDB FOR CACHE (OFFLINE DATA)
       createIndexedDB(indexedDB);
       // SET COMPONENT STATE
-      console.log({downloadTimeArr})
-      setByteLength(byteLengthRes.data)
-      setDownloadTimes(downloadTimeArr)
+      console.log({ downloadTimeArr });
+      setByteLength(byteLengthRes.data);
+      setDownloadTimes(downloadTimeArr);
     }
   } catch (err) {
     dispatchError(err);
   }
 };
 
-export const getCacheData = (indexedDB, dispatch) => {
+export const getCacheData = (indexedDB, dispatch, index) => {
   const dbReq = indexedDB.open("JSON", 2);
 
   dbReq.onsuccess = (e) => {
@@ -97,25 +100,27 @@ export const getCacheData = (indexedDB, dispatch) => {
       const { result } = data.target;
       // console.log("req1sucess");
       // console.log(result);
+      console.log({ index: index, value: result[index] })
 
       result.length === 0
         ? dispatch(
             setPreloaderText("Cache Data Empty, Try Again with Internet")
           )
-        : dispatch(setQuakes(result[0]));
+        : dispatch(setQuakesByIndex({ index: index, value: result[index] }));
     };
 
     storeReq2.onsuccess = (data) => {
       const { result } = data.target;
       // console.log("req2sucess");
-      // console.log(result);
+      console.log(result);
+      console.log({ index: index, value: result[index] })
 
       if (result.length === 0) {
         dispatch(setPreloaderText("Cache Data Empty, Try Again with Internet"));
       } else {
         batch(() => {
           dispatch(setProgressComplete(100));
-          dispatch(setThreeData(result[0]));
+          dispatch(setThreeDataByIndex({ index: index, value: result[index] }));
           dispatch(setVizInitSuccess(true));
         });
       }
@@ -123,7 +128,13 @@ export const getCacheData = (indexedDB, dispatch) => {
   };
 };
 
-export const putCacheData = (res, index, indexedDB, dispatch) => {
+export const putCacheData = (
+  res,
+  index,
+  indexedDB,
+  dispatch,
+  updateRedux = true
+) => {
   const dbReq = indexedDB.open("JSON");
 
   dbReq.onsuccess = (e) => {
@@ -133,7 +144,7 @@ export const putCacheData = (res, index, indexedDB, dispatch) => {
     // GEO
     const transaction1 = db.transaction(["geo"], "readwrite");
     const store1 = transaction1.objectStore("geo");
-    const storeReq1 = store1.put(res[0], 0);
+    const storeReq1 = store1.put(res.quakes, index);
 
     storeReq1.onsuccess = function (e) {
       console.log("storeReq1.onsuccess");
@@ -146,7 +157,7 @@ export const putCacheData = (res, index, indexedDB, dispatch) => {
     // THREE
     const transaction2 = db.transaction(["three"], "readwrite");
     const store2 = transaction2.objectStore("three");
-    const storeReq2 = store2.put(res[1], 0);
+    const storeReq2 = store2.put(res.threeData, index);
 
     storeReq2.onsuccess = function (e) {
       console.log("storeReq2.onsuccess");
@@ -157,12 +168,13 @@ export const putCacheData = (res, index, indexedDB, dispatch) => {
       dispatchError(e);
     };
     // SET REDUX
-    batch(() => {
-      dispatch(setQuakesByIndex({index, value: res.quakes}));
-      dispatch(setThreeDataByIndex({index, value: res.threeData}));
-      // TODO: Create recursive function to get maximum feedIndex
-      dispatch(setVizInitSuccess(true))
-    });
+    if (updateRedux) {
+      batch(() => {
+        dispatch(setQuakesByIndex({ index: index, value: res.quakes }));
+        dispatch(setThreeDataByIndex({ index: index, value: res.threeData }));
+        dispatch(setVizInitSuccess(true));
+      });
+    }
   };
 };
 
@@ -177,16 +189,16 @@ export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
   xhrReq.open("POST", `${baseURL}/quakeData`, true);
 
   xhrReq.onprogress = (e) => {
-    console.log(e.loaded)
-    console.log(byteLength[selectValue])
+    console.log(e.loaded);
+    console.log(byteLength[selectValue]);
     dispatch(setProgressComplete((e.loaded / byteLength[selectValue]) * 100));
   };
 
   xhrReq.onreadystatechange = function () {
     if (this.readyState === 4 && this.status === 200) {
       const res = JSON.parse(this.responseText);
-      console.log({res})
-      dispatch(setProgressComplete(100))
+      console.log({ res });
+      dispatch(setProgressComplete(100));
       putCacheData(res, selectValue, indexedDB, dispatch); // Updates Redux after storing to IndexedDB
     }
   };
@@ -196,6 +208,6 @@ export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
     getCacheData();
   };
 
-  xhrReq.setRequestHeader("Content-Type", 'application/json');
-  xhrReq.send(JSON.stringify({index: selectValue}));
+  xhrReq.setRequestHeader("Content-Type", "application/json");
+  xhrReq.send(JSON.stringify({ index: selectValue }));
 };

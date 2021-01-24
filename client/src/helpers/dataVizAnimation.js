@@ -176,18 +176,19 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
     const { threeData } = STATE.viz;
     const { feedIndex } = STATE.option;
 
+    console.log({threeData})
+
     if (threeData) {
       Scene.dataArray[0] =
-        threeData[0] !== null ? objLoader.parse(threeData[0]) : null;
+        threeData[0] !== null && Scene.dataArray[0] === null ? objLoader.parse(threeData[0]) : null;
       Scene.dataArray[1] =
-        threeData[1] !== null ? objLoader.parse(threeData[1]) : null;
+        threeData[1] !== null && Scene.dataArray[1] === null ? objLoader.parse(threeData[1]) : null;
       Scene.dataArray[2] =
-        threeData[2] !== null ? objLoader.parse(threeData[2]) : null;
+        threeData[2] !== null && Scene.dataArray[2] === null  ? objLoader.parse(threeData[2]) : null;
       Scene.dataArray[3] =
-        threeData[3] !== null ? objLoader.parse(threeData[3]) : null;
+        threeData[3] !== null && Scene.dataArray[3] === null  ? objLoader.parse(threeData[3]) : null;
 
       Scene.sceneLoader.data = Scene.dataArray[feedIndex];
-      Scene.getObjectByName("world").add(Scene.dataArray[feedIndex]);
     }
   };
 
@@ -429,7 +430,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
             side: THREE.BackSide,
           });
 
-          materialArray.push(material);
+          materialArray[i] = material;
         },
         undefined, // onProgress calback unsupported
         (error) => {
