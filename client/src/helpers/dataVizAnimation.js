@@ -430,7 +430,7 @@ export const vizAnimation = (WIDTH, HEIGHT) => {
             side: THREE.BackSide,
           });
 
-          materialArray.push(material);
+          materialArray[i] = material;
         },
         undefined, // onProgress calback unsupported
         (error) => {
