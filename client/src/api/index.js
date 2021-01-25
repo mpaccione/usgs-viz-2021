@@ -5,12 +5,10 @@ import {
   clearErrorMessage,
 } from "@/redux/reducers/errorSlice";
 
-export const baseURL =
+const baseURL =
   !process.env.NODE_ENV || process.env.NODE_ENV === "development"
     ? "http://localhost:8081/api"
     : "https://quakeviz.app/api";
-
-// export const baseURL = "https://quakeviz.app";
 
 const axiosReq = axios.create({
     baseURL,

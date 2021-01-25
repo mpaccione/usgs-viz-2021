@@ -1,5 +1,5 @@
 import { batch } from "react-redux";
-import { dispatchError, baseURL, get } from "@/api/index.js";
+import { dispatchError, get, post } from "@/api/index.js";
 import {
   setPreloaderText,
   setProgressComplete,
@@ -178,36 +178,22 @@ export const putCacheData = (
   };
 };
 
-export const xhrReq = (byteLength, selectValue, indexedDB, dispatch) => {
-  // XHR REQ (needed for progress api - displaying download progress)
-  const xhrReq = new XMLHttpRequest();
+export const quakeDataReq = async (byteLength, selectValue, indexedDB, dispatch) => {
   batch(() => {
     dispatch(setVizLoad(true));
     dispatch(setPreloaderText("Loading Big Data"));
   });
 
-  xhrReq.open("POST", `${baseURL}/quakeData`, true);
-
-  xhrReq.onprogress = (e) => {
-    console.log(e.loaded);
-    console.log(byteLength[selectValue]);
-    dispatch(setProgressComplete((e.loaded / byteLength[selectValue]) * 100));
-  };
-
-  xhrReq.onreadystatechange = function () {
-    if (this.readyState === 4 && this.status === 200) {
-      const res = JSON.parse(this.responseText);
-      console.log({ res });
+  try {
+    const res = await post("quakeData", {index: selectValue}, {
+      onUploadProgress: progressEvent =>  dispatch(setProgressComplete((progressEvent.loaded / byteLength[selectValue]) * 100))
+    });
+    if (res && res.data){
       dispatch(setProgressComplete(100));
-      putCacheData(res, selectValue, indexedDB, dispatch); // Updates Redux after storing to IndexedDB
+      putCacheData(res.data, selectValue, indexedDB, dispatch); // Updates Redux after storing to IndexedDB
     }
-  };
-
-  xhrReq.onerror = (e) => {
+  } catch (err) {
     dispatch(setPreloaderText("Connection Error, Loading Cache Data"));
     getCacheData();
-  };
-
-  xhrReq.setRequestHeader("Content-Type", "application/json");
-  xhrReq.send(JSON.stringify({ index: selectValue }));
+  }
 };
