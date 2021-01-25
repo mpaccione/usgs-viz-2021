@@ -1,6 +1,5 @@
 // Set this to true for production
-const doCache = process.env.NODE_ENV === "development" ? false : true;
-// const doCache = true;
+const doCache = true;
 
 // Name our cache
 const CACHE_NAME = 'quake-viz-cache';
