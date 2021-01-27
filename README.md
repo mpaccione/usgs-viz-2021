@@ -15,14 +15,14 @@ The backend data collection is powered by a Node.js server. Three.js is then use
 Currently, the project is hosted at https://quakeviz.app and can also be accessed in the Google Play store under the search criteria of "Quake Viz". The PWA is deployed on an Ubuntu VPS via Digital Ocean.
 
 # Desktop
-![Quake Viz Desktop 1](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/quake_viz_desktop.png?raw=true)
+![Quake Viz Desktop 1](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/src/assets/quake_viz_desktop.png?raw=true)
 
-![Quake Viz Desktop 2](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/quake_viz_desktop_2.png?raw=true)
+![Quake Viz Desktop 2](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/src/assets/quake_viz_desktop_2.png?raw=true)
 
 # Mobile
-![Quake Viz Mobile 1](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/quake_viz_mobile.png?raw=true)
+![Quake Viz Mobile 1](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/src/assets/quake_viz_mobile.png?raw=true)
 
-![Quake Viz Mobile 2](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/quake_viz_mobile_2.png?raw=true)
+![Quake Viz Mobile 2](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/src/assets/quake_viz_mobile_2.png?raw=true)
 
 # Creative Commons Attribution-NonCommercial 4.0 International Public License
 By exercising the Licensed Rights (defined below), You accept and agree to be bound by the terms and conditions of this Creative Commons Attribution-NonCommercial 4.0 International Public License ("Public License"). To the extent this Public License may be interpreted as a contract, You are granted the Licensed Rights in consideration of Your acceptance of these terms and conditions, and the Licensor grants You such rights in consideration of benefits the Licensor receives from making the Licensed Material available under these terms and conditions.
