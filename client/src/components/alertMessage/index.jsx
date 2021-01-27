@@ -15,7 +15,6 @@ const AlertMessage = () => {
           icon="cancel"
           header="There was an error"
           content={errorMessage}
-          wide
         />
       )}
       {successMessage && successMessage.length > 0 && (
@@ -24,7 +23,6 @@ const AlertMessage = () => {
           icon="check"
           header="There was a successful action"
           content={successMessage}
-          wide
         />
       )}
     </>

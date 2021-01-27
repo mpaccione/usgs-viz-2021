@@ -1,6 +1,29 @@
 # usgs-viz-2021
 Personal project for displaying USGS Earthquake data. Also used as a portfolio piece to demonstrate engineering practices. 
 
+```
+License: CC BY-NC 4.0
+```
+
+# Client 
+Project features the usage of React.js and Three.js for front end data and UI visualization. The project also features a strong third world consideration via the inclusion of Progressive Web Application functionality. Assets are cached locally in a service worker and fetched when there is no data connection. In addition to this IndexedDB is used to store the downloaded data sets. Users can select from multiple timeframe and texture sets. Additional timeframes can be downloaded from the backend API. The texture sets were created in Photoshop with the use of NASA assets. The tectonic map was drawn by visual estimation in Photoshop.
+
+# Server
+The backend data collection is powered by a Node.js server. Three.js is then used to parse the data set from the United States Geological Service (USGS) into 3D JSON. Rarely is SSR of Three.js objects done, however, for mobile support to be functional it must be done. The corresponsing Three and Geo data is then written to a flat file DB in a CRON job every 4 minutes. GZIP and Brotli compressed versions are stored respectively and served based on the appropriate content type headers. Byte lengths are measured as well and accessed via a seperate API route, enabling users with limited data plans to download the appropriate dataset.
+
+# Deployment
+Currently, the project is hosted at https://quakeviz.app and can also be accessed in the Google Play store under the search criteria of "Quake Viz". The PWA is deployed on an Ubuntu VPS via Digital Ocean.
+
+# Desktop
+![Quake Viz Desktop 1](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/quake_viz_desktop.png?raw=true)
+
+![Quake Viz Desktop 2](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/quake_viz_desktop_2.png?raw=true)
+
+# Mobile
+![Quake Viz Mobile 1](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/quake_viz_mobile.png?raw=true)
+
+![Quake Viz Mobile 2](https://github.com/mpaccione/usgs-viz-2021/blob/main/client/quake_viz_mobile_2.png?raw=true)
+
 # Creative Commons Attribution-NonCommercial 4.0 International Public License
 By exercising the Licensed Rights (defined below), You accept and agree to be bound by the terms and conditions of this Creative Commons Attribution-NonCommercial 4.0 International Public License ("Public License"). To the extent this Public License may be interpreted as a contract, You are granted the Licensed Rights in consideration of Your acceptance of these terms and conditions, and the Licensor grants You such rights in consideration of benefits the Licensor receives from making the Licensed Material available under these terms and conditions.
 
