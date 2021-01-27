@@ -83,7 +83,7 @@ export const getByteLengths = async (setByteLength, setDownloadTimes) => {
 };
 
 export const getCacheData = (indexedDB, dispatch, index) => {
-  const dbReq = indexedDB.open("JSON", 2);
+  const dbReq = indexedDB.open("JSON");
 
   dbReq.onsuccess = (e) => {
     const db = e.target.result;
@@ -194,6 +194,6 @@ export const quakeDataReq = async (byteLength, selectValue, indexedDB, dispatch)
     }
   } catch (err) {
     dispatch(setPreloaderText("Connection Error, Loading Cache Data"));
-    getCacheData();
+    getCacheData(indexedDB, dispatch, selectValue);
   }
 };
