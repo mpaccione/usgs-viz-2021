@@ -43,8 +43,8 @@ const SearchField = () => {
             id="searchButtonInactive"
             onClick={() => {
               if (search !== "") {
+                dispatch(setSearchWord(search));
                 setSearch("");
-                dispatch(setSearchWord(searchWord));
               }
             }}
             icon
