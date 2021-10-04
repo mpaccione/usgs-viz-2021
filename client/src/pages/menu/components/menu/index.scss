@@ -21,7 +21,7 @@
 
   #timeSelect {
     background-color: white;
-    border-radius: 5px;
+    border-radius: 2px;
 
     .dropdown {
       height: 22px;
@@ -43,5 +43,39 @@
     width: 100%;
     padding: 15px;
     border-radius: 0px;
+  }
+}
+
+@media (max-width: 720px) {
+  #splashMenu {
+    height: 100% !important;
+    top: 0px !important;
+    left: 0px !important;
+    transform: none !important;
+    
+    #speedTable tr {
+      padding-top: 0.1em !important;
+      padding-bottom: 0.1em !important;
+    }
+  }
+}
+
+@media (max-width: 720px) and (orientation: landscape) {
+  #splashMenu h1 {
+    margin-bottom: 0px !important;
+  }
+  
+
+  #speedTable {
+    margin-bottom: 15px !important;
+
+    thead {
+      display: none !important;
+    }
+
+    tbody {
+      display: flex !important;
+      justify-content: center !important;
+    }
   }
 }
