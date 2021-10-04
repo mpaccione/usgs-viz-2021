@@ -10,15 +10,15 @@ const urlsToCache = [
   // DESKTOP
   `/`,
   // CSS Chunks
-  `${CSS_URL}main.29521d99.chunk.css`,
-  `${CSS_URL}2.85f7760d.chunk.css`,
-  `${CSS_URL}4.6ecebf6e.chunk.css`,
+  `${CSS_URL}main.c78cd90f.chunk.css`,
+  `${CSS_URL}2.7dce832d.chunk.css`,
+  `${CSS_URL}4.b26f3c60.chunk.css`,
   // JS Chunks
-  `${JS_URL}runtime~main.77309457.js`,
-  `${JS_URL}main.498f36cc.chunk.js`,
-  `${JS_URL}2.08a31337.chunk.js`,
-  `${JS_URL}3.bb60ac8e.chunk.js`,
-  `${JS_URL}4.e6a30b6f.chunk.js`,
+  `${JS_URL}runtime-main.8b8327dd.js`,
+  `${JS_URL}main.5e703577.chunk.js`,
+  `${JS_URL}2.2453161d.chunk.js`,
+  `${JS_URL}3.5e3e0be9.chunk.js`,
+  `${JS_URL}4.014c8af1.chunk.js`,
   // Globe Texture
   `${ASSETS_URL}moltenCore1k_optimized.jpg`,
   `${ASSETS_URL}earthmap4k_optimized.jpg`,
