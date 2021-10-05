@@ -92,10 +92,6 @@ const Menu = () => {
       <h4>
         Data from The United States Geological Service
         <br />
-        <span style={{ opacity: 0.4 }}>
-          Chrome/Android Browser Required for Textures
-        </span>
-        <br />
         &copy; Michael Paccione
       </h4>
     </div>
