@@ -14,10 +14,10 @@ const urlsToCache = [
   `${CSS_URL}2.7dce832d.chunk.css`,
   `${CSS_URL}4.b26f3c60.chunk.css`,
   // JS Chunks
-  `${JS_URL}runtime-main.8b8327dd.js`,
-  `${JS_URL}main.5e703577.chunk.js`,
-  `${JS_URL}2.2453161d.chunk.js`,
-  `${JS_URL}3.5e3e0be9.chunk.js`,
+  `${JS_URL}runtime-main.751d80d7.js`,
+  `${JS_URL}main.47e40433.chunk.js`,
+  `${JS_URL}2.0f913fa2.chunk.js`,
+  `${JS_URL}3.4fc26c32.chunk.js`,
   `${JS_URL}4.014c8af1.chunk.js`,
   // Globe Texture
   `${ASSETS_URL}moltenCore1k_optimized.jpg`,
