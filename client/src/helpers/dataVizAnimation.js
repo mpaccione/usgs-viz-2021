@@ -12,7 +12,7 @@ import { setModalText } from "@/redux/reducers/modalSlice.js";
 import { setVizTextureRendered } from "@/redux/reducers/vizSlice.js";
 import {
   setAutoRotation,
-  setSimulationGlobe,
+  // setSimulationGlobe,
 } from "@/redux/reducers/optionSlice.js";
 import store from "@/redux/store.js";
 
