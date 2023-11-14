@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { navigate } from "@reach/router";
 import { Dropdown, Table, Button, Progress } from "semantic-ui-react";
-import { getByteLengths, dropdownOptions, quakeDataReq } from "@/helpers/menuMenu.js";
+import {
+  getByteLengths,
+  dropdownOptions,
+  quakeDataReq,
+} from "@/helpers/menuMenu.js";
 import { setFeedIndex } from "@/redux/reducers/optionSlice.js";
 import "./index.scss";
 
@@ -43,10 +47,7 @@ const Menu = () => {
             <Dropdown
               placeholder="Select Time Frame"
               options={dropdownOptions}
-              onChange={(e, { value }) => {
-                console.log(value);
-                setSelectValue(value);
-              }}
+              onChange={(e, { value }) => setSelectValue(value)}
               value={selectValue}
             />
           </div>
@@ -74,7 +75,7 @@ const Menu = () => {
               </Table>
               <Button
                 onClick={() => {
-                  dispatch(setFeedIndex(selectValue))
+                  dispatch(setFeedIndex(selectValue));
                   quakeDataReq(byteLength, selectValue, indexedDB, dispatch); // Gets Viz Data, Stores in IndexedDB+Redux
                 }}
               >
@@ -94,6 +95,14 @@ const Menu = () => {
         <br />
         &copy; Michael Paccione
       </h4>
+      <p>
+        <u
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/privacy-policy")}
+        >
+          Privacy Policy
+        </u>
+      </p>
     </div>
   );
 };

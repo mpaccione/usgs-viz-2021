@@ -1,9 +1,11 @@
 import React, { Suspense } from "react";
-import { useSelector } from "react-redux";
-import { Router } from "@reach/router";
-import Menu from "@/pages/menu/index.jsx";
 import { Loader } from "semantic-ui-react";
+import { Router } from "@reach/router";
+import { useSelector } from "react-redux";
+
 import AlertMessage from "./components/alertMessage";
+import Menu from "@/pages/menu/index.jsx";
+import PrivacyPolicy from "./pages/privacyPolicy";
 
 const DataViz = React.lazy(() => import("@/pages/dataViz/index.jsx"));
 
@@ -16,6 +18,7 @@ const App = () => {
         <Router>
           <Menu exact path="/" />
           <DataViz exact path="/viz" />
+          <PrivacyPolicy exact path="/privacy-policy" />
         </Router>
       </Suspense>
       {error && <AlertMessage />}
