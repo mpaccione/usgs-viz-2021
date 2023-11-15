@@ -6,6 +6,8 @@ export const timeClass = (quakes, feedIndex, index) => {
     const week = 604800000; // (1 Week)
     const month = 2629746000; // (1 Month)
 
+    console.log(calcTime)
+
     let className = "";
 
     if (calcTime > week) {

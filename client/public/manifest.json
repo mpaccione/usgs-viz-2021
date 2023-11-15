@@ -1,10 +1,15 @@
 {
+  "id": "/?homescreen=1",
   "name": "Earthquake Visualizer",
   "short_name": "Quake Viz",
+  "description": "USGS 3D Earthquake Visualizer created by Michael Paccione.",
   "theme_color": "#25963e",
   "background_color": "#544435",
   "display": "fullscreen",
-  "Scope": "/",
+  "orientation": "any",
+  "dir": "ltr",
+  "lang": "en",
+  "scope": "https://quakeviz.app",
   "start_url": "/",
   "icons": [
     {
@@ -48,5 +53,8 @@
       "type": "image/png"
     }
   ],
-  "splash_pages": null
+  "splash_pages": null,
+  "launch_handler": {
+    "client_mode": ["focus-existing", "auto"]
+  }
 }
