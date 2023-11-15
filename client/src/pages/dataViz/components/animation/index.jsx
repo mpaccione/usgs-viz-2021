@@ -23,11 +23,11 @@ const resizeHandler = () => {
 
 const Viz = React.memo(
   ({
-    globes,
-    feedIndex,
+    autoRotation,
     clickXRotation,
     clickYRotation,
-    autoRotation,
+    feedIndex,
+    globes,
     selectedQuake
   }) => {
     // Mount

@@ -17,11 +17,9 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
   // Search Filtering
   useEffect(() => {
     if (searchWord !== "") {
-      const filteredBySearch = quakes[feedIndex].filter((quake) => {
-        if (quake.location.toLowerCase().includes(searchWord.toLowerCase())) {
-          return quake;
-        }
-      });
+      const filteredBySearch = quakes[feedIndex].filter((quake) =>
+        quake.location.toLowerCase().includes(searchWord.toLowerCase())
+      );
       setFilteredData(filteredBySearch);
     } else {
       setFilteredData(false);
@@ -84,7 +82,8 @@ const List = ({ mobile, feedIndex, feedTitle, quakes, searchWord }) => {
           rowGetter={({ index }) =>
             filteredData ? filteredData[index] : quakes[feedIndex][index]
           }
-          onRowClick={({ index }) => {
+          onRowClick={({ rowData }) => {
+            const index = quakes[feedIndex].findIndex((data) => data.location === rowData.location)
             dispatch(setSelectedQuakeIndex(index));
             setShowMobileMenu(false);
           }}

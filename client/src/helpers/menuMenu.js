@@ -45,25 +45,37 @@ export const calcDownloadTimes = (bLen) => {
 };
 
 export const createIndexedDB = (indexedDB) => {
-  const dbReq = indexedDB.open("JSON", 1);
+  return new Promise((resolve, reject) => {
+    const dbReq = indexedDB.open("JSON", 1);
 
-  dbReq.onerror = (e) => dispatchError(e);
+    dbReq.onerror = (e) => {
+      dispatchError(e);
+      reject(e);
+    }
+  
+    dbReq.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      db.createObjectStore("geo", {
+        autoIncrement: true,
+      });
+      db.createObjectStore("three", {
+        autoIncrement: true,
+      });
+      console.dir({ stores: db })
+      resolve(db);
+    };
 
-  dbReq.onupgradeneeded = (e) => {
-    const db = e.target.result;
-    db.createObjectStore("geo", {
-      autoIncrement: true,
-    });
-    db.createObjectStore("three", {
-      autoIncrement: true,
-    });
-  };
+    dbReq.onsuccess = (e) => {
+      const db = e.target.result;
+      resolve(db)
+    };
+  });
 };
 
 export const getByteLengths = async (setByteLength, setDownloadTimes) => {
   try {
     const byteLengthRes = await get("/bufferLength");
-    console.log({ byteLengthRes });
+
     if (byteLengthRes && byteLengthRes.data) {
       let downloadTimeArr = [];
       // DOWNLOAD TIMES
@@ -71,7 +83,7 @@ export const getByteLengths = async (setByteLength, setDownloadTimes) => {
         downloadTimeArr.push(calcDownloadTimes(datum));
       });
       // INDEXEDDB FOR CACHE (OFFLINE DATA)
-      createIndexedDB(indexedDB);
+      await createIndexedDB(indexedDB);
       // SET COMPONENT STATE
       console.log({ downloadTimeArr });
       setByteLength(byteLengthRes.data);
@@ -137,10 +149,15 @@ export const putCacheData = (
 ) => {
   const dbReq = indexedDB.open("JSON");
 
-  dbReq.onsuccess = (e) => {
+  dbReq.onsuccess = async (e) => {
     console.log("req.onsuccess");
 
     const db = e.target.result;
+
+    if (!db.objectStoreNames.contains("geo") || !db.objectStoreNames.contains("three")) {
+      await createIndexedDB(indexedDB);
+    }
+
     // GEO
     const transaction1 = db.transaction(["geo"], "readwrite");
     const store1 = transaction1.objectStore("geo");
